@@ -1,0 +1,205 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import LiteYouTube from '../../components/LiteYouTube.astro';
+import ContactCTA from '../../components/ContactCTA.astro';
+
+export async function getStaticPaths() {
+	const projects = await getCollection('projects');
+	return projects.map((project) => ({
+		params: { slug: project.id },
+		props: { project },
+	}));
+}
+
+const { project } = Astro.props;
+const { title, status, date, tags, stack, outcome, org_context, links, hero_asset } =
+	project.data;
+const { Content } = await render(project);
+
+const dateLabel = date.toISOString().slice(0, 10);
+---
+
+<Base title={`${title} — PIYUSH TATER`} description={outcome}>
+	<article class:list={[status]}>
+		<nav class="crumb">
+			<a href="/">← all work</a>
+		</nav>
+
+		{
+			status === 'dead' && (
+				<aside class="post-mortem" role="note">
+					<strong>POST-MORTEM</strong> — this project is dead. What killed it: {outcome}
+				</aside>
+			)
+		}
+		{
+			status === 'paused' && (
+				<aside class="on-ice" role="note">
+					<strong>ON ICE</strong> — paused, not abandoned.
+				</aside>
+			)
+		}
+
+		<header>
+			<div class="title-row">
+				<h1>{title}</h1>
+				<StatusBadge status={status} />
+			</div>
+			<p class="outcome">{outcome}</p>
+
+			<dl class="meta">
+				<div>
+					<dt>date</dt>
+					<dd><time datetime={dateLabel}>{dateLabel}</time></dd>
+				</div>
+				<div>
+					<dt>tags</dt>
+					<dd>{tags.join(', ')}</dd>
+				</div>
+				<div>
+					<dt>stack</dt>
+					<dd>{stack.join(', ')}</dd>
+				</div>
+				{
+					org_context && (
+						<div>
+							<dt>context</dt>
+							<dd>{org_context}</dd>
+						</div>
+					)
+				}
+				{
+					(links?.live || links?.repo || links?.linkedin) && (
+						<div>
+							<dt>links</dt>
+							<dd>
+								{links?.live && <a href={links.live}>live</a>}
+								{links?.repo && <a href={links.repo}>repo</a>}
+								{links?.linkedin && <a href={links.linkedin}>linkedin</a>}
+							</dd>
+						</div>
+					)
+				}
+			</dl>
+		</header>
+
+		{hero_asset && <Image class="hero-img" src={hero_asset} alt="" width={1200} />}
+
+		{links?.youtube && <LiteYouTube url={links.youtube} title={`${title} — video`} />}
+
+		<div class="prose">
+			<Content />
+		</div>
+	</article>
+
+	<ContactCTA heading="Want a system like this?" />
+</Base>
+
+<style>
+	article {
+		max-width: var(--measure);
+		margin-inline: auto;
+		padding-block: 2rem 3rem;
+	}
+	.crumb a {
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		text-decoration: none;
+		color: var(--text-dim);
+	}
+	.crumb a:hover {
+		color: var(--accent);
+	}
+	.post-mortem,
+	.on-ice {
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		border: 1px solid var(--dead);
+		border-radius: var(--radius);
+		color: var(--dead);
+		padding: 0.75rem 1rem;
+		margin-block: 1.5rem;
+	}
+	.on-ice {
+		border-color: var(--hairline);
+		color: var(--text-dim);
+	}
+	.dead h1 {
+		color: color-mix(in srgb, var(--text) 80%, var(--dead));
+	}
+	.title-row {
+		display: flex;
+		align-items: baseline;
+		gap: 1rem;
+		flex-wrap: wrap;
+		margin-top: 1.5rem;
+	}
+	h1 {
+		font-size: var(--text-2xl);
+		margin: 0;
+	}
+	.outcome {
+		font-size: var(--text-md);
+		color: var(--text-dim);
+		margin: 0.75rem 0 0;
+	}
+	.meta {
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		border: 1px solid var(--hairline);
+		border-radius: var(--radius);
+		background: var(--bg-raised);
+		padding: 1rem 1.25rem;
+		margin-block: 2rem;
+		display: grid;
+		gap: 0.5rem;
+	}
+	.meta div {
+		display: flex;
+		gap: 1rem;
+	}
+	dt {
+		color: var(--text-dim);
+		min-width: 5.5rem;
+	}
+	dt::after {
+		content: ':';
+	}
+	dd {
+		margin: 0;
+		display: flex;
+		gap: 1rem;
+	}
+	.hero-img {
+		width: 100%;
+		height: auto;
+		border: 1px solid var(--hairline);
+		border-radius: var(--radius);
+		margin-bottom: 2rem;
+	}
+	.prose {
+		background: var(--bg-raised);
+		border: 1px solid var(--hairline);
+		border-radius: var(--radius);
+		padding: 1.5rem;
+		margin-top: 2rem;
+	}
+	.prose :global(img) {
+		max-width: 100%;
+		height: auto;
+		border-radius: var(--radius);
+	}
+	.prose :global(h2),
+	.prose :global(h3) {
+		font-size: var(--text-md);
+	}
+	@media (max-width: 600px) {
+		.meta div {
+			flex-direction: column;
+			gap: 0.1rem;
+		}
+	}
+</style>

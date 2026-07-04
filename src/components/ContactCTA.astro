@@ -1,0 +1,55 @@
+---
+import { site } from '../config';
+
+interface Props {
+	heading?: string;
+}
+
+const { heading = 'Work with me' } = Astro.props;
+const { email, linkedin } = site.contact;
+---
+
+<div class="cta">
+	<p class="lead">{heading}</p>
+	<p class="sub">
+		I build AI systems and workflows for organizations — internal tooling,
+		automation, the gaps AI can fill.
+	</p>
+	<p class="actions">
+		<a href={`mailto:${email}`}>{email}</a>
+		{linkedin && <a href={linkedin}>LinkedIn</a>}
+	</p>
+</div>
+
+<style>
+	.cta {
+		border-top: 1px solid var(--hairline);
+		padding-block: 2.5rem;
+	}
+	.lead {
+		font-family: var(--font-mono);
+		font-size: var(--text-md);
+		margin: 0 0 0.5rem;
+	}
+	.sub {
+		color: var(--text-dim);
+		max-width: var(--measure);
+		margin: 0 0 1.25rem;
+	}
+	.actions {
+		display: flex;
+		gap: 1.5rem;
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		margin: 0;
+	}
+	.actions a {
+		text-decoration: none;
+		border-bottom: 1px solid var(--accent);
+		padding-bottom: 2px;
+		transition: color var(--duration-micro) var(--ease-out);
+	}
+	.actions a:hover {
+		color: var(--accent);
+	}
+</style>

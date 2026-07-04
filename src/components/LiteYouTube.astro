@@ -1,0 +1,99 @@
+---
+/**
+ * Lite YouTube facade (doc 01: no iframe until click).
+ * Renders a thumbnail + play affordance as a plain link to YouTube; a tiny
+ * inline script upgrades the click to swap in the real iframe. With JS
+ * disabled the link still works — never a dead element.
+ */
+interface Props {
+	url: string;
+	title?: string;
+}
+
+const { url, title = 'Watch on YouTube' } = Astro.props;
+
+function videoId(u: string): string | null {
+	try {
+		const parsed = new URL(u);
+		if (parsed.hostname === 'youtu.be') return parsed.pathname.slice(1) || null;
+		if (parsed.hostname.endsWith('youtube.com')) {
+			if (parsed.searchParams.get('v')) return parsed.searchParams.get('v');
+			const m = parsed.pathname.match(/\/(embed|shorts|live)\/([\w-]{6,})/);
+			if (m) return m[2];
+		}
+	} catch {
+		return null;
+	}
+	return null;
+}
+
+const id = videoId(url);
+---
+
+{
+	id ? (
+		<a
+			class="lite-yt"
+			href={url}
+			data-video-id={id}
+			aria-label={title}
+		>
+			<img
+				src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+				alt=""
+				loading="lazy"
+				width="480"
+				height="360"
+			/>
+			<span class="play" aria-hidden="true">▶</span>
+		</a>
+	) : (
+		<a href={url}>{title}</a>
+	)
+}
+
+<script>
+	document.querySelectorAll<HTMLAnchorElement>('.lite-yt').forEach((el) => {
+		el.addEventListener('click', (e) => {
+			e.preventDefault();
+			const iframe = document.createElement('iframe');
+			iframe.src = `https://www.youtube-nocookie.com/embed/${el.dataset.videoId}?autoplay=1`;
+			iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+			iframe.allowFullscreen = true;
+			iframe.title = el.getAttribute('aria-label') ?? 'YouTube video';
+			el.replaceWith(iframe);
+			iframe.classList.add('lite-yt-frame');
+		});
+	});
+</script>
+
+<style is:global>
+	.lite-yt,
+	.lite-yt-frame {
+		position: relative;
+		display: block;
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		border: 1px solid var(--hairline);
+		border-radius: var(--radius);
+		overflow: hidden;
+	}
+	.lite-yt img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: brightness(0.7);
+	}
+	.lite-yt .play {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+		font-size: 2rem;
+		color: var(--text);
+		transition: color var(--duration-micro) var(--ease-out);
+	}
+	.lite-yt:hover .play {
+		color: var(--accent);
+	}
+</style>
