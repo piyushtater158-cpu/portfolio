@@ -1,0 +1,37 @@
+---
+interface Props {
+	status: 'live' | 'dead' | 'paused';
+}
+
+const { status } = Astro.props;
+
+const label = { live: 'LIVE', dead: 'POST-MORTEM', paused: 'ON ICE' }[status];
+---
+
+<span class:list={['badge', status]}>{label}</span>
+
+<style>
+	.badge {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		padding: 0.15rem 0.5rem;
+		border: 1px solid;
+		border-radius: var(--radius);
+		white-space: nowrap;
+	}
+	.live {
+		color: var(--accent);
+		border-color: var(--accent);
+	}
+	.dead {
+		color: var(--dead);
+		border-color: var(--dead);
+	}
+	.paused {
+		color: var(--text-dim);
+		border-color: var(--hairline);
+		opacity: var(--paused-opacity);
+	}
+</style>
