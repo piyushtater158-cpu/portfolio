@@ -19,10 +19,10 @@ Order is contractual (content system before spectacle). Full specs: docs/design/
 - [x] Verify: malformed frontmatter fails PR build with readable error (PR #5: names file, field, allowed values)
 - [x] Verify: 15-minute Tuesday test (desktop) — pipeline dry-run: template copy → push → green preview in ~20s; budget is all writing time. Re-time with first real project.
 
-## Session 3 — Graph + poster
-- [ ] Graph compiler: collections → graph.json (hub node, tag/stack edges, baked force layout + camera pose, lowercase-slug normalization, single-use-tag warning)
-- [ ] Static SVG poster generator (orthographic projection, served as <img>)
-- [ ] Verify: adding a project changes the graph with zero code edits
+## Session 3 — Graph + poster — done 2026-07-04
+- [x] Graph compiler: collections → graph.json (hub node, tag/stack edges, baked force layout + camera pose, lowercase-slug normalization, single-use-tag warning) — deterministic (seeded), `scripts/build-graph.ts`, runs before astro build
+- [x] Static SVG poster generator (orthographic projection, served as <img>) — `public/constellation.svg`, wired into hero
+- [x] Verify: adding a project changes the graph with zero code edits (temp entry → graph.json + poster changed → removal reverts byte-identically)
 
 ## Session 4 — Hero (timeboxed)
 - [ ] three.js + d3-force-3d island, client:visible, initialized from baked positions

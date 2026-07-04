@@ -29,3 +29,7 @@ pnpm-debug.log*
 .vercel
 .env*
 .gstack/
+
+# build-generated (graph compiler output)
+src/generated/
+public/constellation.svg
