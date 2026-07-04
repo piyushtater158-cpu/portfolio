@@ -9,15 +9,15 @@ Order is contractual (content system before spectacle). Full specs: docs/design/
 - [x] Connect Vercel, deployed placeholder live
 - [x] Design tokens from DESIGN.md as CSS custom properties + fonts wired
 
-## Session 2 — Content system (the product)
-- [ ] Content collection + Zod schema (exact fields per doc 01)
-- [ ] `src/content/projects/_template/` (excluded from collection glob)
-- [ ] Case-study page template (dark, mobile-first, lite-embed YouTube, status treatments, CTA block)
-- [ ] Project feed (reverse-chron, all statuses, no-JS navigable)
-- [ ] Footer contact CTA on every page
+## Session 2 — Content system (the product) — done 2026-07-04 except real content
+- [x] Content collection + Zod schema (exact fields per doc 01)
+- [x] `src/content/projects/_template/` (excluded from collection glob)
+- [x] Case-study page template (dark, mobile-first, lite-embed YouTube, status treatments, CTA block)
+- [x] Project feed (reverse-chron, all statuses, no-JS navigable)
+- [x] Footer contact CTA on every page (LinkedIn URL pending in src/config.ts)
 - [ ] Enter 3 real projects (BLOCKED on user content — never fabricate)
-- [ ] Verify: malformed frontmatter fails PR build with readable error
-- [ ] Verify: 15-minute Tuesday test (desktop) passes
+- [x] Verify: malformed frontmatter fails PR build with readable error (PR #5: names file, field, allowed values)
+- [x] Verify: 15-minute Tuesday test (desktop) — pipeline dry-run: template copy → push → green preview in ~20s; budget is all writing time. Re-time with first real project.
 
 ## Session 3 — Graph + poster
 - [ ] Graph compiler: collections → graph.json (hub node, tag/stack edges, baked force layout + camera pose, lowercase-slug normalization, single-use-tag warning)
