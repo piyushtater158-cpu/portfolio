@@ -1,0 +1,44 @@
+/*
+ * Design tokens — source of truth is DESIGN.md. Change values there first.
+ * Rules that tokens can't encode: max two accent colors on screen at once;
+ * cyan is structural (data/motion), violet is reactive (visitor response);
+ * borders are hairlines or nothing; never linear easing.
+ */
+
+:root {
+	/* Palette */
+	--bg: #0a0a0f;
+	--bg-raised: #101018;
+	--accent: #22d3ee;
+	--accent-2: #8b5cf6;
+	--text: #f4f4f5;
+	--text-dim: #9ca3af;
+	--hairline: #27272a;
+	--dead: #f87171;
+	--paused-opacity: 0.4;
+
+	/* Typography */
+	--font-mono: 'JetBrains Mono Variable', ui-monospace, 'Cascadia Code', monospace;
+	--font-body: 'Inter Variable', system-ui, sans-serif;
+
+	/* Type scale — 1.25 ratio from 1rem base */
+	--text-sm: 0.8rem;
+	--text-base: 1rem;
+	--text-md: 1.25rem;
+	--text-lg: 1.563rem;
+	--text-xl: 1.953rem;
+	--text-2xl: 2.441rem;
+	--text-h1: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+
+	--leading-body: 1.65;
+	--measure: 70ch;
+
+	/* Motion — inertia: nothing snaps, everything settles */
+	--ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+	--ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+	--duration-micro: 200ms;
+	--duration-reveal: 500ms;
+
+	/* Surfaces */
+	--radius: 6px;
+}

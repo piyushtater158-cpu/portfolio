@@ -1,5 +1,5 @@
 ---
-
+import '../styles/global.css';
 ---
 
 <html lang="en">
@@ -10,21 +10,31 @@
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<title>PIYUSH / SYSTEMS</title>
-		<style>
-			html {
-				background: #0a0a0f;
-				color: #f4f4f5;
-				font-family: ui-monospace, monospace;
-			}
-			body {
-				display: grid;
-				place-items: center;
-				min-height: 100dvh;
-				margin: 0;
-			}
-		</style>
 	</head>
 	<body>
-		<h1>PIYUSH / SYSTEMS</h1>
+		<main>
+			<h1>PIYUSH <span class="divider">/</span> SYSTEMS</h1>
+			<p>Living system booting…</p>
+		</main>
 	</body>
 </html>
+
+<style>
+	body {
+		display: grid;
+		place-items: center;
+	}
+	main {
+		text-align: center;
+	}
+	.divider {
+		color: var(--accent);
+	}
+	p {
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		color: var(--text-dim);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+</style>
