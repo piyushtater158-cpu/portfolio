@@ -4,7 +4,6 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import LiteYouTube from '../../components/LiteYouTube.astro';
-import ContactCTA from '../../components/ContactCTA.astro';
 
 export async function getStaticPaths() {
 	const projects = await getCollection('projects');
@@ -25,7 +24,7 @@ const dateLabel = date.toISOString().slice(0, 10);
 <Base title={`${title} — PIYUSH TATER`} description={outcome}>
 	<article class:list={[status]}>
 		<nav class="crumb">
-			<a href="/">← all work</a>
+			<a href="/"><span class="mark">PIYUSH TATER</span> <span class="dest">/ ← all work</span></a>
 		</nav>
 
 		{
@@ -94,8 +93,6 @@ const dateLabel = date.toISOString().slice(0, 10);
 			<Content />
 		</div>
 	</article>
-
-	<ContactCTA heading="Want a system like this?" />
 </Base>
 
 <style>
@@ -109,8 +106,17 @@ const dateLabel = date.toISOString().slice(0, 10);
 		font-size: var(--text-sm);
 		text-decoration: none;
 		color: var(--text-dim);
+		display: inline-block;
+		/* 44px touch target without shifting the visual layout */
+		padding-block: 0.65rem;
+		margin-block: -0.65rem;
 	}
-	.crumb a:hover {
+	.crumb .mark {
+		color: var(--text);
+		letter-spacing: 0.08em;
+	}
+	.crumb a:hover .mark,
+	.crumb a:hover .dest {
 		color: var(--accent);
 	}
 	.post-mortem,

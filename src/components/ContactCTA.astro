@@ -44,9 +44,12 @@ const { email, linkedin } = site.contact;
 		margin: 0;
 	}
 	.actions a {
-		text-decoration: none;
-		border-bottom: 1px solid var(--accent);
-		padding-bottom: 2px;
+		text-decoration: underline;
+		text-decoration-color: var(--accent);
+		text-underline-offset: 4px;
+		/* 44px touch target without shifting the visual layout */
+		padding-block: 0.65rem;
+		margin-block: -0.65rem;
 		transition: color var(--duration-micro) var(--ease-out);
 	}
 	.actions a:hover {
