@@ -10,18 +10,47 @@ const projects = (await getCollection('projects')).sort(
 ---
 
 <Base>
+	<Fragment slot="head">
+		{/* Device gate (doc 01 gates a–d) — inline, BEFORE first paint, so the
+		    hero's reserved height is decided at initial layout (CLS-safe).
+		    No JS at all → attribute absent → CSS defaults to the static path. */}
+		<script is:inline>
+			(function () {
+				var mode = 'auto';
+				try {
+					var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+					var gl = null;
+					if (!reduced) {
+						var c = document.createElement('canvas');
+						gl = c.getContext('webgl2') || c.getContext('webgl');
+					}
+					if (reduced || !gl) mode = 'static';
+					else if (innerWidth < 768 || (navigator.deviceMemory && navigator.deviceMemory < 4))
+						mode = 'tap';
+				} catch (e) {
+					mode = 'static';
+				}
+				document.documentElement.dataset.hero = mode;
+			})();
+		</script>
+	</Fragment>
+
 	<section class="hero">
-		<img
-			class="poster"
-			src="/constellation.svg"
-			alt=""
-			width="1200"
-			height="675"
-			fetchpriority="high"
-		/>
-		<div class="hero-copy">
-			<h1><span class="typed">{site.title}</span><span class="cursor" aria-hidden="true">█</span></h1>
-			<p class="tag">GenAI systems developer — building living AI systems for organizations</p>
+		<div class="hero-viewport">
+			<img
+				class="poster"
+				src="/constellation.svg"
+				alt=""
+				width="1200"
+				height="675"
+				fetchpriority="high"
+			/>
+			<div class="sim-mount" aria-hidden="true"></div>
+			<div class="hero-copy">
+				<h1><span class="typed">{site.title}</span><span class="cursor" aria-hidden="true">█</span></h1>
+				<p class="tag">GenAI systems developer — building living AI systems for organizations</p>
+			</div>
+			<button class="run-system" type="button">run the system ▸</button>
 		</div>
 	</section>
 
@@ -44,13 +73,63 @@ const projects = (await getCollection('projects')).sort(
 	</section>
 </Base>
 
+<script>
+	// Hydration controller — client:visible semantics without a framework:
+	// dynamic import only when the gate allows it and the hero is on screen.
+	const mode = document.documentElement.dataset.hero;
+	const mount = document.querySelector<HTMLElement>('.sim-mount');
+	const runBtn = document.querySelector<HTMLButtonElement>('.run-system');
+	const fine = matchMedia('(pointer: fine)').matches;
+
+	async function boot(budget: number, dolly: boolean) {
+		const { startHeroSim } = await import('../scripts/hero-sim');
+		startHeroSim({ mount: mount!, budget, dolly, interactive: fine });
+	}
+
+	if (mount && mode === 'auto') {
+		const io = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting) {
+					io.disconnect();
+					boot(6000, true);
+					if (fine)
+						import('lenis').then(({ default: Lenis }) => new Lenis({ autoRaf: true }));
+				}
+			},
+			{ threshold: 0 }
+		);
+		io.observe(mount);
+	} else if (mount && mode === 'tap' && runBtn) {
+		runBtn.addEventListener(
+			'click',
+			() => {
+				runBtn.classList.add('is-hidden');
+				boot(3000, false); // half budget, sim animates in place — no dolly
+			},
+			{ once: true }
+		);
+	}
+</script>
+
 <style>
+	/* Layout reservation (doc 01): sim-capable paths reserve the ~2-viewport
+	   scroll range at first paint; static (or no-JS) paths lay out one. */
 	.hero {
-		min-height: 60dvh;
+		height: 100dvh;
+		position: relative;
+	}
+	:global(html[data-hero='auto']) .hero,
+	:global(html[data-hero='tap']) .hero {
+		height: 200dvh;
+	}
+	.hero-viewport {
+		position: sticky;
+		top: 0;
+		height: 100dvh;
 		display: grid;
 		place-content: center;
 		text-align: center;
-		position: relative;
+		overflow: hidden;
 	}
 	.poster {
 		position: absolute;
@@ -60,8 +139,37 @@ const projects = (await getCollection('projects')).sort(
 		object-fit: contain;
 		opacity: 0.55;
 	}
+	.sim-mount {
+		position: absolute;
+		inset: 0;
+	}
+	.sim-mount :global(canvas) {
+		display: block;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		transition: opacity 600ms var(--ease-out);
+	}
+	.sim-mount :global(canvas.is-live) {
+		opacity: 1;
+	}
+	.sim-mount :global(.hero-tooltip) {
+		position: absolute;
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		color: var(--text);
+		background: var(--bg-raised);
+		border: 1px solid var(--hairline);
+		border-radius: var(--radius);
+		padding: 0.25rem 0.6rem;
+		pointer-events: none;
+		white-space: nowrap;
+		z-index: 3;
+	}
 	.hero-copy {
 		position: relative;
+		z-index: 2;
+		pointer-events: none;
 	}
 	h1 {
 		margin: 0;
@@ -75,7 +183,7 @@ const projects = (await getCollection('projects')).sort(
 			opacity: 0;
 		}
 	}
-	.hero .tag {
+	.hero-copy .tag {
 		font-family: var(--font-mono);
 		font-size: var(--text-sm);
 		color: var(--text-dim);
@@ -83,6 +191,33 @@ const projects = (await getCollection('projects')).sort(
 		letter-spacing: 0.08em;
 		max-width: 40ch;
 		margin-inline: auto;
+	}
+	.run-system {
+		display: none;
+		position: absolute;
+		left: 50%;
+		bottom: 12dvh;
+		transform: translateX(-50%);
+		z-index: 2;
+		font-family: var(--font-mono);
+		font-size: var(--text-sm);
+		letter-spacing: 0.08em;
+		color: var(--accent);
+		background: transparent;
+		border: 1px solid var(--accent);
+		border-radius: var(--radius);
+		padding: 0.6rem 1.2rem;
+		cursor: pointer;
+		transition: background var(--duration-micro) var(--ease-out);
+	}
+	.run-system:hover {
+		background: color-mix(in srgb, var(--accent) 12%, transparent);
+	}
+	:global(html[data-hero='tap']) .run-system {
+		display: block;
+	}
+	.run-system.is-hidden {
+		display: none;
 	}
 	.feed {
 		padding-block: 3rem;

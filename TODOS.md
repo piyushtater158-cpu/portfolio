@@ -24,13 +24,13 @@ Order is contractual (content system before spectacle). Full specs: docs/design/
 - [x] Static SVG poster generator (orthographic projection, served as <img>) — `public/constellation.svg`, wired into hero
 - [x] Verify: adding a project changes the graph with zero code edits (temp entry → graph.json + poster changed → removal reverts byte-identically)
 
-## Session 4 — Hero (timeboxed)
-- [ ] three.js + d3-force-3d island, client:visible, initialized from baked positions
-- [ ] Inline head gate script + device matrix (doc 01 gates a–d) + layout reservation
-- [ ] Scroll dolly (native scroll; Lenis desktop-only), node click → case page
-- [ ] Cursor magnetism + node hover blooms (desktop)
-- [ ] Mobile "run the system" tap affordance (half budget)
-- [ ] Particle polish — HARD TIMEBOX: one session
+## Session 4 — Hero (timeboxed) — done 2026-07-04
+- [x] three.js + d3-force-3d island, client:visible (vanilla IntersectionObserver + dynamic import, no framework), initialized from baked positions
+- [x] Inline head gate script + device matrix (doc 01 gates a–d) + layout reservation (static=1dvh-viewport, sim paths=200dvh; no-JS defaults to static)
+- [x] Scroll dolly (native scroll; Lenis desktop-only), node click → case page
+- [x] Cursor magnetism + node hover blooms (desktop, violet + tooltip)
+- [x] Mobile "run the system" tap affordance (half budget, dolly disabled — animates in place)
+- [x] Particle polish — laminar edge streams + ambient drift; STOPPED at timebox (LCP tuning is session 5)
 
 ## Session 5 — Verify + ship
 - [ ] Lighthouse mobile (4x CPU throttle, Fast 3G): LCP < 2.5s both paths
