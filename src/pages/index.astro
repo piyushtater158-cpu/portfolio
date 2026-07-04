@@ -216,7 +216,8 @@ const projects = (await getCollection('projects')).sort(
 	:global(html[data-hero='tap']) .run-system {
 		display: block;
 	}
-	.run-system.is-hidden {
+	/* must outspecify the html[data-hero='tap'] display rule above */
+	:global(html[data-hero='tap']) .run-system.is-hidden {
 		display: none;
 	}
 	.feed {
