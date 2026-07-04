@@ -32,14 +32,18 @@ Order is contractual (content system before spectacle). Full specs: docs/design/
 - [x] Mobile "run the system" tap affordance (half budget, dolly disabled — animates in place)
 - [x] Particle polish — laminar edge streams + ambient drift; STOPPED at timebox (LCP tuning is session 5)
 
-## Session 5 — Verify + ship
-- [ ] Lighthouse mobile (4x CPU throttle, Fast 3G): LCP < 2.5s both paths
-- [ ] prefers-reduced-motion → static only (emulated)
-- [ ] Feed navigable with JS disabled
-- [ ] Poster→sim crossfade: no node jump (Success Criterion 8)
-- [ ] Live phone test: file create / folder trick / image upload per GitHub surface → THEN write README phone workflow
-- [ ] /gstack-qa + /gstack-design-review passes
-- [ ] Ship v1, share URL
+## Session 5 — Verify + ship — done 2026-07-05 except phone test + real content
+- [x] Lighthouse mobile (4x CPU throttle, slow-4G sim): auto path 0.99 / LCP 1.72s, reduced-motion path 1.0 / LCP 1.19s — LCP element is the poster <img> on both (CLS 0.001)
+- [x] prefers-reduced-motion → static only (verified on production with --force-prefers-reduced-motion → data-hero="static", sim never hydrates)
+- [x] Feed navigable with JS disabled (plain anchors in static HTML, re-verified with temp entries)
+- [x] Poster→sim crossfade: no node jump (session-4 visual verification, projection contract in code)
+- [ ] Live phone test: file create / folder trick / image upload per GitHub surface → THEN write README phone workflow (BLOCKED on user's phone)
+- [x] /gstack-qa passes — health 97→100; fixed ISSUE-001 (tap button stayed visible, PR #8); deferred ISSUE-002 (THREE.Clock deprecation, low)
+- [x] /gstack-design-review passes — B+→A−, AI-slop A; fixed FINDING-001/002/003 (touch targets, case-page site ID, duplicate CTA, PR #9)
+- [x] Ship v1, share URL: https://portfolio-rho-wheat-94.vercel.app (content pending: 3 real projects)
+
+## Deferred (from session-5 reviews)
+- THREE.Clock → THREE.Timer in src/scripts/hero-sim.ts (deprecation warning, low; breaks on a future three.js major)
 
 ## Post-v1 (triggers, not plans)
 - Agent-drafting workflow — trigger: finished project unwritten > 2 weeks
