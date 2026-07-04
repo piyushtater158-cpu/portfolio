@@ -6,8 +6,9 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "graph": "bun scripts/build-graph.ts",
+    "dev": "bun scripts/build-graph.ts && astro dev",
+    "build": "bun scripts/build-graph.ts && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -15,6 +16,11 @@
     "@astrojs/mdx": "^7.0.2",
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
-    "astro": "^7.0.6"
+    "astro": "^7.0.6",
+    "d3-force-3d": "^3.0.6"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "yaml": "^2.9.0"
   }
 }

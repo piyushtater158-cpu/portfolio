@@ -11,8 +11,18 @@ const projects = (await getCollection('projects')).sort(
 
 <Base>
 	<section class="hero">
-		<h1><span class="typed">{site.title}</span><span class="cursor" aria-hidden="true">█</span></h1>
-		<p class="tag">GenAI systems developer — building living AI systems for organizations</p>
+		<img
+			class="poster"
+			src="/constellation.svg"
+			alt=""
+			width="1200"
+			height="675"
+			fetchpriority="high"
+		/>
+		<div class="hero-copy">
+			<h1><span class="typed">{site.title}</span><span class="cursor" aria-hidden="true">█</span></h1>
+			<p class="tag">GenAI systems developer — building living AI systems for organizations</p>
+		</div>
 	</section>
 
 	<section class="feed" aria-labelledby="work-heading">
@@ -40,6 +50,18 @@ const projects = (await getCollection('projects')).sort(
 		display: grid;
 		place-content: center;
 		text-align: center;
+		position: relative;
+	}
+	.poster {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		opacity: 0.55;
+	}
+	.hero-copy {
+		position: relative;
 	}
 	h1 {
 		margin: 0;

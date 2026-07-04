@@ -8,6 +8,6 @@ export const site = {
 		'GenAI systems developer — AI systems, workflows, and automation for organizations.',
 	contact: {
 		email: 'piyushtater158@gmail.com',
-		linkedin: '',
+		linkedin: 'https://www.linkedin.com/in/applied-genai',
 	},
 } as const;
