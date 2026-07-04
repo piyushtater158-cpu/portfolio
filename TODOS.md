@@ -2,12 +2,12 @@
 
 Order is contractual (content system before spectacle). Full specs: docs/design/01 + 02, CLAUDE.md, DESIGN.md.
 
-## Session 1 — Foundation
-- [ ] `bun create astro` scaffold (around existing CLAUDE.md/DESIGN.md/docs — do not overwrite)
-- [ ] `.gitignore` (.env, node_modules, dist, .astro) in first commit
-- [ ] Create PUBLIC GitHub repo, push, enable branch protection on main (require PR + Vercel check)
-- [ ] Connect Vercel, deployed placeholder live
-- [ ] Design tokens from DESIGN.md as CSS custom properties + fonts wired
+## Session 1 — Foundation ✅ (2026-07-04)
+- [x] `bun create astro` scaffold (around existing CLAUDE.md/DESIGN.md/docs — do not overwrite)
+- [x] `.gitignore` (.env, node_modules, dist, .astro) in first commit
+- [x] Create PUBLIC GitHub repo, push, enable branch protection on main (require PR + Vercel check)
+- [x] Connect Vercel, deployed placeholder live
+- [x] Design tokens from DESIGN.md as CSS custom properties + fonts wired
 
 ## Session 2 — Content system (the product)
 - [ ] Content collection + Zod schema (exact fields per doc 01)
