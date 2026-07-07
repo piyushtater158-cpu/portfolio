@@ -4,6 +4,13 @@ Piyush Tater's portfolio: a GenAI systems developer whose site behaves like a Ge
 
 **Source of truth:** `docs/design/01-living-system-architecture.md` (site architecture, APPROVED) and `docs/design/02-update-surface-github-as-panel.md` (content workflow, APPROVED). When this file and those docs conflict, the design docs win. Read `DESIGN.md` before any visual work — aesthetic quality is the top-priority requirement of this project.
 
+## Session protocol (context continuity — do this every session)
+
+1. **At session start, read `context/STATE.md` FIRST** — it is the single source of current truth (deployment status, blockers, deferred items, next actions). Do not re-derive project state from git alone; STATE.md carries decisions and provenance that git history doesn't.
+2. **Before ending any session that changed anything** (code, content, decisions, deployment, or open questions), update `context/STATE.md` to reflect the new current state (edit in place — it is a snapshot, not a journal; bump "Last updated") and append one 3–6-line entry to `context/LOG.md` (date, what changed, decisions, surprises).
+3. If a session is interrupted before the update, reconstruct from `git log` + PR history and repair STATE.md before doing new work.
+4. TODOS.md tracks build-checklist status; STATE.md tracks everything else. Keep both current — a stale STATE.md is a bug, treat it with the same severity as failing CI.
+
 ## Hard rules
 
 1. **bun only.** No npm/yarn/pnpm anywhere — scripts, docs, CI.
