@@ -73,6 +73,7 @@ const slugify = (s: string) =>
 // card link URLs land in client-side href attributes — only bake web URLs,
 // never javascript:/data: etc. (esc() alone can't catch those)
 const isHttp = (u: string) => u.startsWith('https://') || u.startsWith('http://');
+const isMailto = (u: string) => u.startsWith('mailto:');
 
 function buildCard(slug: string, fm: Record<string, unknown>): Card {
 	const rawLinks = (fm.links ?? {}) as Record<string, unknown>;
@@ -83,7 +84,7 @@ function buildCard(slug: string, fm: Record<string, unknown>): Card {
 	}
 	if (Array.isArray(rawLinks.other))
 		for (const o of rawLinks.other as { label?: unknown; url?: unknown }[])
-			if (typeof o?.url === 'string' && isHttp(o.url))
+			if (typeof o?.url === 'string' && (isHttp(o.url) || isMailto(o.url)))
 				links.push({ kind: 'other', label: String(o.label ?? 'link'), url: o.url });
 
 	const ytUrl =

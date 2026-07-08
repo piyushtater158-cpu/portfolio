@@ -259,7 +259,10 @@ const esc = (s: string) =>
 
 // defense in depth behind build-graph's bake-time filter: esc() can't stop a
 // javascript:/data: URL from being a live href, so only web URLs render
-const safeUrl = (u: string) => (u.startsWith('https://') || u.startsWith('http://') ? u : '');
+const safeUrl = (u: string) =>
+	u.startsWith('https://') || u.startsWith('http://') || u.startsWith('mailto:') ? u : '';
+const externalLinkAttrs = (u: string) =>
+	u.startsWith('mailto:') ? '' : ' target="_blank" rel="noopener noreferrer"';
 
 let instance: NodeCard | null = null;
 
@@ -303,7 +306,7 @@ function create(): NodeCard {
 				? `<ul class="nc-links">${linkRows
 						.map(
 							(l) =>
-								`<li><a href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener noreferrer">${ICONS[l.kind] ?? ICONS.other}<span class="u">${esc(l.label)}</span></a></li>`
+								`<li><a href="${esc(safeUrl(l.url))}"${externalLinkAttrs(l.url)}>${ICONS[l.kind] ?? ICONS.other}<span class="u">${esc(l.label)}</span></a></li>`
 						)
 						.join('')}</ul>`
 				: '';
