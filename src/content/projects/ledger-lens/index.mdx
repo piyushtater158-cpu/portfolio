@@ -1,6 +1,6 @@
 ---
 title: Ledger Lens
-status: live
+status: paused
 date: 2026-07-02
 tags: [automation, finance]
 stack: [nextjs, n8n, typescript]
@@ -9,7 +9,27 @@ links:
   youtube: "https://youtu.be/CJeEJYP2iH4"
   repo: "https://github.com/piyushtater158-cpu/Ledger_Lens"
   live: "https://ledgerlens.piyushtater.com"
+  other:
+    - label: Request beta access
+      url: "mailto:piyushtater158@gmail.com?subject=Ledger%20Lens%20beta%20access%20request&body=Full%20name%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A%0AAbout%20you%3A%0A%0AOrganization%3A%0A%0ARole%20in%20organization%3A%0A%0AWhy%20you%20need%20access%20(optional)%3A%0A"
 org_context: Finance ops — bulk invoice processing from spreadsheets and email
+---
+
+> **Test access only.** Ledger Lens is in private beta. Sign-in at [ledgerlens.piyushtater.com](https://ledgerlens.piyushtater.com) is for approved testers. If you are not on the list yet, apply below.
+
+## Apply for test access
+
+Use the **[Request beta access](mailto:piyushtater158@gmail.com?subject=Ledger%20Lens%20beta%20access%20request&body=Full%20name%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A%0AAbout%20you%3A%0A%0AOrganization%3A%0A%0ARole%20in%20organization%3A%0A%0AWhy%20you%20need%20access%20(optional)%3A%0A)** link (also on the project card in the graph). Your email app will open with a short template — fill in:
+
+- About you
+- Your organization
+- Your role in the organization
+- The **Google account email** you will use to sign in
+
+I review applications manually and reply within a few business days. If approved, I email you when your account can sign in.
+
+**Prefer a form?** A Google Form intake is being set up; until then, the email link above is the application path. Fallback: [piyushtater158@gmail.com](mailto:piyushtater158@gmail.com) with subject `Ledger Lens beta access request`.
+
 ---
 
 ## What it does
@@ -18,7 +38,7 @@ Ledger Lens automates payee extraction from invoices. Upload a spreadsheet of Go
 
 ## How it works
 
-1. **Sign in** with Google (`drive.readonly` + `gmail.readonly`).
+1. **Sign in** with Google (`drive.readonly` + `gmail.readonly`) — approved testers only during beta.
 2. **Spreadsheet path** — upload `.xlsx`, auto-detect columns, process all rows, download the filled file.
 3. **Gmail path** — pick a date range and optional keyword; discover attachments, extract fields per row on the live dashboard.
 4. **Backend** — four n8n webhook workflows proxy to OpenRouter vision (`google/gemini-2.5-flash`). The user's Google token is forwarded per request and never stored in n8n.
