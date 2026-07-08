@@ -10,6 +10,7 @@ import * as THREE from 'three';
 // @ts-expect-error d3-force-3d ships no types
 import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force-3d';
 import graph from '../generated/graph.json';
+import { nodeCard, type CardNode } from './node-card';
 
 interface SimOptions {
 	mount: HTMLElement;
@@ -83,24 +84,36 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 	// ── nodes (sprites: dot + glow in one radial texture) ─────────────────
 	const tex = glowTexture();
 	const sprites: THREE.Sprite[] = [];
-	for (const n of nodes) {
+	const GOLDEN = Math.PI * (3 - Math.sqrt(5));
+	nodes.forEach((n, i) => {
 		const isHub = n.kind === 'hub';
 		const color = isHub ? 0xf4f4f5 : (STATUS_COLOR[n.status ?? 'live'] ?? 0x22d3ee);
+		const baseOpacity = n.status === 'paused' ? 0.4 : 0.9;
 		const mat = new THREE.SpriteMaterial({
 			map: tex,
 			color,
 			transparent: true,
-			opacity: n.status === 'paused' ? 0.4 : 0.95,
+			opacity: baseOpacity,
 			depthWrite: false,
 		});
 		const sp = new THREE.Sprite(mat);
 		const scale = (isHub ? n.r * 2.4 : n.r * 2.2) * (cam.orthoHalfHeight / (POSTER_H / 2));
 		sp.scale.setScalar(scale);
 		sp.position.set(n.x, n.y, n.z);
-		sp.userData = { node: n, baseScale: scale, baseColor: new THREE.Color(color) };
+		sp.userData = {
+			node: n,
+			baseScale: scale,
+			baseColor: new THREE.Color(color),
+			baseOpacity,
+			// heartbeat pulse (live-data read): live nodes beat a touch faster and
+			// deeper; phases spread on the golden angle so the field never syncs up
+			pulsePhase: i * GOLDEN,
+			pulseSpeed: n.status === 'live' || isHub ? 1.6 : 1.1,
+			pulseAmp: isHub ? 0.04 : n.status === 'live' ? 0.07 : 0.04,
+		};
 		scene.add(sp);
 		sprites.push(sp);
-	}
+	});
 
 	// ── edges ──────────────────────────────────────────────────────────────
 	const nodeIndex = new Map(nodes.map((n, i) => [n.id, i]));
@@ -197,6 +210,7 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 	const pointerWorld = new THREE.Vector3();
 	let pointerActive = false;
 	let hovered: THREE.Sprite | null = null;
+	let card: ReturnType<typeof nodeCard> | null = null;
 	const tooltip = document.createElement('div');
 	tooltip.className = 'hero-tooltip';
 	tooltip.hidden = true;
@@ -216,7 +230,10 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 		});
 		renderer.domElement.addEventListener('click', () => {
 			const n = hovered?.userData.node;
-			if (n && n.kind === 'project') window.location.href = `/projects/${n.id}/`;
+			if (n && n.kind === 'project') {
+				card ??= nodeCard();
+				card.open(n as CardNode);
+			}
 		});
 	}
 
@@ -249,10 +266,19 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 			sizeCamera();
 		}
 
-		// nodes + edges follow the breathing sim
+		// nodes + edges follow the breathing sim; every node carries a gentle
+		// sinusoidal heartbeat (scale + glow) so the system always reads live
+		const t = clock.elapsedTime;
 		for (const sp of sprites) {
-			const n = sp.userData.node;
+			const u = sp.userData;
+			const n = u.node;
 			sp.position.set(n.x, n.y, n.z);
+			const pulse = 1 + u.pulseAmp * Math.sin(t * u.pulseSpeed + u.pulsePhase);
+			sp.scale.setScalar(u.baseScale * pulse * (sp === hovered ? 1.7 : 1));
+			(sp.material as THREE.SpriteMaterial).opacity = Math.min(
+				1,
+				u.baseOpacity * (1 + u.pulseAmp * 1.2 * Math.sin(t * u.pulseSpeed + u.pulsePhase))
+			);
 		}
 		for (let i = 0; i < edges.length; i++) {
 			const e = edges[i] as { source: { x: number; y: number; z: number }; target: { x: number; y: number; z: number } };
@@ -325,16 +351,15 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 		}
 	}
 
+	// scale is owned by the frame loop (pulse × hover factor); bloom only tints
 	function bloom(sp: THREE.Sprite) {
 		(sp.material as THREE.SpriteMaterial).color.copy(VIOLET);
-		sp.scale.setScalar(sp.userData.baseScale * 1.7);
 		renderer.domElement.style.cursor = 'pointer';
 		tooltip.textContent = sp.userData.node.title;
 		tooltip.hidden = false;
 	}
 	function unbloom(sp: THREE.Sprite) {
 		(sp.material as THREE.SpriteMaterial).color.copy(sp.userData.baseColor);
-		sp.scale.setScalar(sp.userData.baseScale);
 		renderer.domElement.style.cursor = '';
 		tooltip.hidden = true;
 	}
@@ -356,6 +381,7 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 	return () => {
 		disposed = true;
 		io.disconnect();
+		card?.dispose();
 		renderer.dispose();
 		renderer.domElement.remove();
 	};

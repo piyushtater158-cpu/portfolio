@@ -13,3 +13,6 @@ QA 97→100 (fixed tap-button visibility, #8); design review B+→A− (touch ta
 
 ## 2026-07-05 — Context system created (this session)
 Created `context/` (STATE.md + LOG.md) and wired the session protocol into CLAUDE.md so every new session auto-loads the current state and must update it before ending.
+
+## 2026-07-08 — Node card + pulsing graph + card data pipeline (feat/node-card-pipeline)
+User requested (pre-content) the project-card pipeline: HUD-layout popup (logo top-left, info rows top-right, platform links bottom-left, YouTube auto-thumbnail → new tab, case-study CTA) opening on graph-node click and feed click (progressive enhancement), plus continuous heartbeat pulsing on all nodes. Schema +`cover_logo`/`links.x`/`links.other`; graph compiler bakes a `card` payload per node and copies logos to generated `public/graph-cards/`; shared `src/lib/youtube.ts` parser. Bug caught in verification: author `display:grid` beat the UA `[hidden]` rule, so the closed card layer blocked all page clicks — fixed with an explicit `[hidden]{display:none}`. Verified with throwaway content (deleted before PR): desktop node click, feed click, Escape/backdrop/focus restore, no-video collapse, 390px bottom sheet. Gotcha: deleting a content folder mid-dev-daemon leaves a stale content-layer cache — clear `node_modules/.astro` + `.astro`.

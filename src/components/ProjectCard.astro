@@ -15,7 +15,7 @@ const dateLabel = date.toISOString().slice(0, 10);
 ---
 
 <li class:list={['row', status]} style={`--stagger: ${index * 50}ms`}>
-	<a href={`/projects/${project.id}/`}>
+	<a href={`/projects/${project.id}/`} data-project={project.id}>
 		{
 			hero_asset ? (
 				<Image class="thumb" src={hero_asset} alt="" width={160} height={100} />

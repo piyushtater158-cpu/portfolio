@@ -33,3 +33,4 @@ pnpm-debug.log*
 # build-generated (graph compiler output)
 src/generated/
 public/constellation.svg
+public/graph-cards/

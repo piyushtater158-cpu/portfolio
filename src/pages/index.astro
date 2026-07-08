@@ -109,6 +109,27 @@ const projects = (await getCollection('projects')).sort(
 			{ once: true }
 		);
 	}
+
+	// Feed → node card (progressive enhancement). The plain <a> stays the
+	// no-JS route; with JS the same card as the graph opens in place. Modified
+	// clicks (new tab etc.) keep native behavior.
+	document.querySelector('.feed')?.addEventListener('click', async (e) => {
+		const me = e as MouseEvent;
+		if (me.ctrlKey || me.metaKey || me.shiftKey || me.altKey) return;
+		const a = (e.target as HTMLElement).closest?.<HTMLAnchorElement>('a[data-project]');
+		if (!a) return;
+		e.preventDefault();
+		const [{ nodeCard }, graphMod] = await Promise.all([
+			import('../scripts/node-card'),
+			import('../generated/graph.json'),
+		]);
+		const node = graphMod.default.nodes.find((n) => n.id === a.dataset.project);
+		// JSON import widens literal unions (links[].kind) to string — the shape
+		// is guaranteed by build-graph.ts, which bakes this file
+		if (node && node.kind === 'project')
+			nodeCard().open(node as unknown as import('../scripts/node-card').CardNode);
+		else window.location.href = a.href;
+	});
 </script>
 
 <style>

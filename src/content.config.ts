@@ -39,9 +39,19 @@ const projects = defineCollection({
 					linkedin: z.string().url('links.linkedin must be a full URL').optional(),
 					live: z.string().url('links.live must be a full URL').optional(),
 					repo: z.string().url('links.repo must be a full URL').optional(),
+					x: z.string().url('links.x must be a full URL').optional(),
+					other: z
+						.array(
+							z.object({
+								label: z.string().min(1, 'links.other entries need a label, e.g. Product Hunt'),
+								url: z.string().url('links.other entries need a full URL'),
+							})
+						)
+						.optional(),
 				})
 				.optional(),
 			hero_asset: image().optional(),
+			cover_logo: image().optional(),
 		}),
 });
 
