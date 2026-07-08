@@ -25,8 +25,6 @@ const projects = (await getCollection('projects')).sort(
 						gl = c.getContext('webgl2') || c.getContext('webgl');
 					}
 					if (reduced || !gl) mode = 'static';
-					else if (innerWidth < 768 || (navigator.deviceMemory && navigator.deviceMemory < 4))
-						mode = 'tap';
 				} catch (e) {
 					mode = 'static';
 				}
@@ -50,7 +48,6 @@ const projects = (await getCollection('projects')).sort(
 				<h1><span class="typed">{site.title}</span><span class="cursor" aria-hidden="true">█</span></h1>
 				<p class="tag">GenAI systems developer — building living AI systems for organizations</p>
 			</div>
-			<button class="run-system" type="button">run the system ▸</button>
 		</div>
 	</section>
 
@@ -78,12 +75,14 @@ const projects = (await getCollection('projects')).sort(
 	// dynamic import only when the gate allows it and the hero is on screen.
 	const mode = document.documentElement.dataset.hero;
 	const mount = document.querySelector<HTMLElement>('.sim-mount');
-	const runBtn = document.querySelector<HTMLButtonElement>('.run-system');
 	const fine = matchMedia('(pointer: fine)').matches;
+	const narrow =
+		innerWidth < 768 ||
+		((navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8) < 4;
 
 	async function boot(budget: number, dolly: boolean) {
 		const { startHeroSim } = await import('../scripts/hero-sim');
-		startHeroSim({ mount: mount!, budget, dolly, interactive: fine });
+		startHeroSim({ mount: mount!, budget, dolly, finePointer: fine });
 	}
 
 	if (mount && mode === 'auto') {
@@ -91,7 +90,7 @@ const projects = (await getCollection('projects')).sort(
 			(entries) => {
 				if (entries[0].isIntersecting) {
 					io.disconnect();
-					boot(6000, true);
+					boot(narrow ? 3000 : 6000, !narrow);
 					if (fine)
 						import('lenis').then(({ default: Lenis }) => new Lenis({ autoRaf: true }));
 				}
@@ -99,16 +98,28 @@ const projects = (await getCollection('projects')).sort(
 			{ threshold: 0 }
 		);
 		io.observe(mount);
-	} else if (mount && mode === 'tap' && runBtn) {
-		runBtn.addEventListener(
-			'click',
-			() => {
-				runBtn.classList.add('is-hidden');
-				boot(3000, false); // half budget, sim animates in place — no dolly
-			},
-			{ once: true }
-		);
 	}
+
+	// Feed → node card (progressive enhancement). The plain <a> stays the
+	// no-JS route; with JS the same card as the graph opens in place. Modified
+	// clicks (new tab etc.) keep native behavior.
+	document.querySelector('.feed')?.addEventListener('click', async (e) => {
+		const me = e as MouseEvent;
+		if (me.ctrlKey || me.metaKey || me.shiftKey || me.altKey) return;
+		const a = (e.target as HTMLElement).closest?.<HTMLAnchorElement>('a[data-project]');
+		if (!a) return;
+		e.preventDefault();
+		const [{ nodeCard }, graphMod] = await Promise.all([
+			import('../scripts/node-card'),
+			import('../generated/graph.json'),
+		]);
+		const node = graphMod.default.nodes.find((n) => n.id === a.dataset.project);
+		// JSON import widens literal unions (links[].kind) to string — the shape
+		// is guaranteed by build-graph.ts, which bakes this file
+		if (node && node.kind === 'project')
+			nodeCard().open(node as unknown as import('../scripts/node-card').CardNode);
+		else window.location.href = a.href;
+	});
 </script>
 
 <style>
@@ -118,8 +129,7 @@ const projects = (await getCollection('projects')).sort(
 		height: 100dvh;
 		position: relative;
 	}
-	:global(html[data-hero='auto']) .hero,
-	:global(html[data-hero='tap']) .hero {
+	:global(html[data-hero='auto']) .hero {
 		height: 200dvh;
 	}
 	.hero-viewport {
@@ -153,18 +163,39 @@ const projects = (await getCollection('projects')).sort(
 	.sim-mount :global(canvas.is-live) {
 		opacity: 1;
 	}
-	.sim-mount :global(.hero-tooltip) {
+	.sim-mount :global(.hero-labels) {
 		position: absolute;
-		font-family: var(--font-mono);
-		font-size: var(--text-sm);
-		color: var(--text);
-		background: var(--bg-raised);
-		border: 1px solid var(--hairline);
-		border-radius: var(--radius);
-		padding: 0.25rem 0.6rem;
+		inset: 0;
 		pointer-events: none;
+		z-index: 1;
+	}
+	.sim-mount :global(.hero-label) {
+		position: absolute;
+		transform: translate(-50%, 0);
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--text);
 		white-space: nowrap;
-		z-index: 3;
+		max-width: 14ch;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		opacity: 0.88;
+		text-shadow: 0 0 12px color-mix(in srgb, var(--bg) 80%, transparent);
+		transition: color var(--duration-micro) var(--ease-out);
+	}
+	.sim-mount :global(.hero-label[data-status='paused']) {
+		color: var(--text-dim);
+		opacity: 0.55;
+	}
+	.sim-mount :global(.hero-label[data-status='dead']) {
+		color: var(--dead);
+		opacity: 0.75;
+	}
+	.sim-mount :global(.hero-label.is-hovered) {
+		color: var(--accent-2);
+		opacity: 1;
 	}
 	.hero-copy {
 		position: relative;
@@ -191,34 +222,6 @@ const projects = (await getCollection('projects')).sort(
 		letter-spacing: 0.08em;
 		max-width: 40ch;
 		margin-inline: auto;
-	}
-	.run-system {
-		display: none;
-		position: absolute;
-		left: 50%;
-		bottom: 12dvh;
-		transform: translateX(-50%);
-		z-index: 2;
-		font-family: var(--font-mono);
-		font-size: var(--text-sm);
-		letter-spacing: 0.08em;
-		color: var(--accent);
-		background: transparent;
-		border: 1px solid var(--accent);
-		border-radius: var(--radius);
-		padding: 0.6rem 1.2rem;
-		cursor: pointer;
-		transition: background var(--duration-micro) var(--ease-out);
-	}
-	.run-system:hover {
-		background: color-mix(in srgb, var(--accent) 12%, transparent);
-	}
-	:global(html[data-hero='tap']) .run-system {
-		display: block;
-	}
-	/* must outspecify the html[data-hero='tap'] display rule above */
-	:global(html[data-hero='tap']) .run-system.is-hidden {
-		display: none;
 	}
 	.feed {
 		padding-block: 3rem;

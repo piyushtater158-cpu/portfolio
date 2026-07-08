@@ -2,7 +2,7 @@
 
 > Read this file at the START of every session. Update it at the END of any session that changed code, content, decisions, or deployment. Append one entry to `context/LOG.md` per session. Rules for maintaining this file are in CLAUDE.md → "Session protocol".
 
-Last updated: 2026-07-05 (after v1 ship)
+Last updated: 2026-07-08 (node-card + pulsing session)
 
 ## Where the project stands
 
@@ -11,6 +11,8 @@ Repo: https://github.com/piyushtater158-cpu/portfolio (public, branch protection
 Stack: Astro 7 + bun + TypeScript, three.js/d3-force-3d hero island, Vercel deploys.
 
 All five build sessions in TODOS.md are complete. QA health 100 (was 97), design review A− (was B+). Lighthouse mobile: 0.99 auto path / LCP 1.72s; reduced-motion path 1.0 / LCP 1.19s; CLS 0.001; poster `<img>` is the LCP element on both paths — every performance contract from the design docs is met.
+
+**In flight (branch `feat/node-card-pipeline`, user-requested 2026-07-08):** node-card popup (HUD-layout project card: cover logo top-left, info rows top-right, platform links bottom-left, YouTube auto-thumbnail → YouTube in new tab, case-study CTA) opened by graph-node click AND feed-item click (progressive enhancement; no-JS feed still navigates); continuous heartbeat pulsing on all graph nodes; schema pipeline extended (`cover_logo`, `links.x`, `links.other`) and baked into `graph.json` (`card` payload per node, logos copied to generated `public/graph-cards/`). Shared YouTube-id parser at `src/lib/youtube.ts`. Verified locally (desktop node click, feed click, Escape/backdrop/focus, no-video collapse, mobile bottom sheet); build green.
 
 ## Blocked on the user (nothing else blocks launch-completeness)
 

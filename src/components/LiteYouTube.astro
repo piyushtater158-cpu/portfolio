@@ -5,27 +5,14 @@
  * inline script upgrades the click to swap in the real iframe. With JS
  * disabled the link still works — never a dead element.
  */
+import { videoId, thumbUrl } from '../lib/youtube';
+
 interface Props {
 	url: string;
 	title?: string;
 }
 
 const { url, title = 'Watch on YouTube' } = Astro.props;
-
-function videoId(u: string): string | null {
-	try {
-		const parsed = new URL(u);
-		if (parsed.hostname === 'youtu.be') return parsed.pathname.slice(1) || null;
-		if (parsed.hostname.endsWith('youtube.com')) {
-			if (parsed.searchParams.get('v')) return parsed.searchParams.get('v');
-			const m = parsed.pathname.match(/\/(embed|shorts|live)\/([\w-]{6,})/);
-			if (m) return m[2];
-		}
-	} catch {
-		return null;
-	}
-	return null;
-}
 
 const id = videoId(url);
 ---
@@ -39,7 +26,7 @@ const id = videoId(url);
 			aria-label={title}
 		>
 			<img
-				src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+				src={thumbUrl(id)}
 				alt=""
 				loading="lazy"
 				width="480"

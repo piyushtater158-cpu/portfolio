@@ -4,18 +4,19 @@
  * camera pose as the SVG poster (graph.json), and reproduces the poster's
  * orthographic contain-mapping exactly, so the crossfade never moves a node.
  * v1 camera choreography is ONE move: scroll progress dollies (ortho zoom)
- * into the cluster. Mobile tap mode animates in place — dolly disabled.
+ * into the cluster. Narrow viewports animate in place — dolly disabled.
  */
 import * as THREE from 'three';
 // @ts-expect-error d3-force-3d ships no types
 import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force-3d';
 import graph from '../generated/graph.json';
+import { nodeCard, type CardNode } from './node-card';
 
 interface SimOptions {
 	mount: HTMLElement;
 	budget: number;
 	dolly: boolean;
-	interactive: boolean;
+	finePointer: boolean;
 }
 
 const POSTER_W = 1200;
@@ -44,7 +45,7 @@ function glowTexture(): THREE.Texture {
 	return tex;
 }
 
-export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) {
+export function startHeroSim({ mount, budget, dolly, finePointer }: SimOptions) {
 	const nodes = graph.nodes.map((n) => ({ ...n }));
 	const edges = graph.edges.map((e) => ({ ...e }));
 	const cam = graph.camera;
@@ -83,23 +84,73 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 	// ── nodes (sprites: dot + glow in one radial texture) ─────────────────
 	const tex = glowTexture();
 	const sprites: THREE.Sprite[] = [];
-	for (const n of nodes) {
+	const GOLDEN = Math.PI * (3 - Math.sqrt(5));
+	nodes.forEach((n, i) => {
 		const isHub = n.kind === 'hub';
 		const color = isHub ? 0xf4f4f5 : (STATUS_COLOR[n.status ?? 'live'] ?? 0x22d3ee);
+		const baseOpacity = n.status === 'paused' ? 0.4 : 0.9;
 		const mat = new THREE.SpriteMaterial({
 			map: tex,
 			color,
 			transparent: true,
-			opacity: n.status === 'paused' ? 0.4 : 0.95,
+			opacity: baseOpacity,
 			depthWrite: false,
 		});
 		const sp = new THREE.Sprite(mat);
 		const scale = (isHub ? n.r * 2.4 : n.r * 2.2) * (cam.orthoHalfHeight / (POSTER_H / 2));
 		sp.scale.setScalar(scale);
 		sp.position.set(n.x, n.y, n.z);
-		sp.userData = { node: n, baseScale: scale, baseColor: new THREE.Color(color) };
+		sp.userData = {
+			node: n,
+			baseScale: scale,
+			baseColor: new THREE.Color(color),
+			baseOpacity,
+			// heartbeat pulse (live-data read): live nodes beat a touch faster and
+			// deeper; phases spread on the golden angle so the field never syncs up
+			pulsePhase: i * GOLDEN,
+			pulseSpeed: n.status === 'live' || isHub ? 1.6 : 1.1,
+			pulseAmp: isHub ? 0.04 : n.status === 'live' ? 0.07 : 0.04,
+		};
 		scene.add(sp);
 		sprites.push(sp);
+	});
+
+	// ── project name labels (hub uses the hero wordmark) ───────────────────
+	const labelLayer = document.createElement('div');
+	labelLayer.className = 'hero-labels';
+	mount.appendChild(labelLayer);
+	const labels: { el: HTMLSpanElement; sprite: THREE.Sprite }[] = [];
+	for (const sp of sprites) {
+		const n = sp.userData.node;
+		if (n.kind !== 'project') continue;
+		const el = document.createElement('span');
+		el.className = 'hero-label';
+		if (n.status) el.dataset.status = n.status;
+		el.textContent = n.title;
+		labelLayer.appendChild(el);
+		sp.userData.labelEl = el;
+		labels.push({ el, sprite: sp });
+	}
+	const labelPos = new THREE.Vector3();
+
+	function updateLabels() {
+		const w = mount.clientWidth;
+		const h = mount.clientHeight;
+		const viewH = camera.top - camera.bottom;
+		for (const { el, sprite } of labels) {
+			labelPos.copy(sprite.position);
+			labelPos.project(camera);
+			if (labelPos.z > 1) {
+				el.hidden = true;
+				continue;
+			}
+			el.hidden = false;
+			const x = (labelPos.x * 0.5 + 0.5) * w;
+			const y = (-labelPos.y * 0.5 + 0.5) * h;
+			const screenR = ((sprite.scale.y * 0.5) / viewH) * h;
+			el.style.left = `${x}px`;
+			el.style.top = `${y + screenR + 6}px`;
+		}
 	}
 
 	// ── edges ──────────────────────────────────────────────────────────────
@@ -197,28 +248,41 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 	const pointerWorld = new THREE.Vector3();
 	let pointerActive = false;
 	let hovered: THREE.Sprite | null = null;
-	const tooltip = document.createElement('div');
-	tooltip.className = 'hero-tooltip';
-	tooltip.hidden = true;
-	mount.appendChild(tooltip);
+	let card: ReturnType<typeof nodeCard> | null = null;
 
-	if (interactive) {
+	if (finePointer) {
 		mount.addEventListener('pointermove', (e) => {
 			const r = renderer.domElement.getBoundingClientRect();
 			pointerNdc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
 			pointerActive = true;
-			tooltip.style.left = `${e.clientX - r.left + 14}px`;
-			tooltip.style.top = `${e.clientY - r.top + 10}px`;
 		});
 		mount.addEventListener('pointerleave', () => {
 			pointerActive = false;
 			pointerNdc.set(-10, -10);
 		});
-		renderer.domElement.addEventListener('click', () => {
-			const n = hovered?.userData.node;
-			if (n && n.kind === 'project') window.location.href = `/projects/${n.id}/`;
-		});
 	}
+
+	function pickProject(clientX: number, clientY: number) {
+		const r = renderer.domElement.getBoundingClientRect();
+		pointerNdc.set(
+			((clientX - r.left) / r.width) * 2 - 1,
+			-((clientY - r.top) / r.height) * 2 + 1
+		);
+		raycaster.setFromCamera(pointerNdc, camera);
+		for (const hit of raycaster.intersectObjects(sprites, false)) {
+			const n = (hit.object as THREE.Sprite).userData.node;
+			if (n?.kind === 'project') return n as CardNode;
+		}
+		return null;
+	}
+
+	renderer.domElement.addEventListener('click', (e) => {
+		const n = pickProject(e.clientX, e.clientY);
+		if (n) {
+			card ??= nodeCard();
+			card.open(n);
+		}
+	});
 
 	// ── scroll dolly (native scroll; ONE camera move) ──────────────────────
 	const section = mount.closest('section') ?? mount;
@@ -249,10 +313,19 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 			sizeCamera();
 		}
 
-		// nodes + edges follow the breathing sim
+		// nodes + edges follow the breathing sim; every node carries a gentle
+		// sinusoidal heartbeat (scale + glow) so the system always reads live
+		const t = clock.elapsedTime;
 		for (const sp of sprites) {
-			const n = sp.userData.node;
+			const u = sp.userData;
+			const n = u.node;
 			sp.position.set(n.x, n.y, n.z);
+			const pulse = 1 + u.pulseAmp * Math.sin(t * u.pulseSpeed + u.pulsePhase);
+			sp.scale.setScalar(u.baseScale * pulse * (sp === hovered ? 1.7 : 1));
+			(sp.material as THREE.SpriteMaterial).opacity = Math.min(
+				1,
+				u.baseOpacity * (1 + u.pulseAmp * 1.2 * Math.sin(t * u.pulseSpeed + u.pulsePhase))
+			);
 		}
 		for (let i = 0; i < edges.length; i++) {
 			const e = edges[i] as { source: { x: number; y: number; z: number }; target: { x: number; y: number; z: number } };
@@ -292,8 +365,8 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 		}
 		pGeo.attributes.position.needsUpdate = true;
 
-		// hover bloom (violet — the reactive accent)
-		if (interactive && pointerActive) {
+		// hover bloom (violet — the reactive accent; fine pointer only)
+		if (finePointer && pointerActive) {
 			raycaster.setFromCamera(pointerNdc, camera);
 			const hits = raycaster.intersectObjects(sprites, false);
 			const top = (hits[0]?.object as THREE.Sprite) ?? null;
@@ -307,12 +380,13 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 			hovered = null;
 		}
 
+		updateLabels();
 		renderer.render(scene, camera);
 	}
 
 	const MAG_R = boundR * 0.35;
 	function applyMagnetism(p: THREE.Vector3) {
-		if (!pointerActive || !interactive) return;
+		if (!pointerActive || !finePointer) return;
 		const dx = pointerWorld.x - p.x;
 		const dy = pointerWorld.y - p.y;
 		const d2 = dx * dx + dy * dy;
@@ -325,18 +399,16 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 		}
 	}
 
+	// scale is owned by the frame loop (pulse × hover factor); bloom only tints
 	function bloom(sp: THREE.Sprite) {
 		(sp.material as THREE.SpriteMaterial).color.copy(VIOLET);
-		sp.scale.setScalar(sp.userData.baseScale * 1.7);
 		renderer.domElement.style.cursor = 'pointer';
-		tooltip.textContent = sp.userData.node.title;
-		tooltip.hidden = false;
+		(sp.userData.labelEl as HTMLSpanElement | undefined)?.classList.add('is-hovered');
 	}
 	function unbloom(sp: THREE.Sprite) {
 		(sp.material as THREE.SpriteMaterial).color.copy(sp.userData.baseColor);
-		sp.scale.setScalar(sp.userData.baseScale);
 		renderer.domElement.style.cursor = '';
-		tooltip.hidden = true;
+		(sp.userData.labelEl as HTMLSpanElement | undefined)?.classList.remove('is-hovered');
 	}
 
 	// pause off-screen / hidden tab
@@ -356,6 +428,8 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 	return () => {
 		disposed = true;
 		io.disconnect();
+		card?.dispose();
+		labelLayer.remove();
 		renderer.dispose();
 		renderer.domElement.remove();
 	};

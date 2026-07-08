@@ -6,16 +6,29 @@
  * seamless. Deterministic: seeded RNG + fixed initial positions, so a rebuild
  * without content changes produces byte-identical output.
  */
-import { readdirSync, readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import {
+	readdirSync,
+	readFileSync,
+	writeFileSync,
+	mkdirSync,
+	existsSync,
+	rmSync,
+	copyFileSync,
+} from 'node:fs';
+import { join, extname, resolve, sep } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 // @ts-expect-error d3-force-3d ships no types
 import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force-3d';
+import { videoId } from '../src/lib/youtube';
 
 const ROOT = join(import.meta.dir, '..');
 const CONTENT_DIR = join(ROOT, 'src', 'content', 'projects');
 const OUT_JSON = join(ROOT, 'src', 'generated', 'graph.json');
 const OUT_SVG = join(ROOT, 'public', 'constellation.svg');
+// cover logos copied here for the node card (client JS can't reach src/content
+// assets; this mirrors the constellation.svg generate-into-public precedent)
+const OUT_CARDS = join(ROOT, 'public', 'graph-cards');
+const LOGO_EXTS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.avif', '.gif', '.svg']);
 
 const HUB_ID = '__hub__';
 const HUB_LABEL = 'PIYUSH TATER';
@@ -23,12 +36,31 @@ const HUB_LABEL = 'PIYUSH TATER';
 // ── read frontmatter ─────────────────────────────────────────────────────────
 
 type Status = 'live' | 'dead' | 'paused';
+
+/** One resource row on the node card, in render order. */
+interface CardLink {
+	kind: 'repo' | 'linkedin' | 'live' | 'x' | 'other';
+	label: string;
+	url: string;
+}
+/** Everything the node-card popup needs, baked per project node. */
+interface Card {
+	outcome: string;
+	date: string; // YYYY-MM-DD
+	tags: string[];
+	stack: string[];
+	links: CardLink[];
+	yt?: { id: string; url: string }; // youtube gets the video area, not a row
+	logo?: string; // public path, e.g. /graph-cards/<slug>.png
+}
+
 interface Project {
 	slug: string;
 	title: string;
 	status: Status;
 	tags: string[];
 	stack: string[];
+	card: Card;
 }
 
 const slugify = (s: string) =>
@@ -38,8 +70,64 @@ const slugify = (s: string) =>
 		.replace(/[\s_]+/g, '-')
 		.replace(/[^a-z0-9-]/g, '');
 
+// card link URLs land in client-side href attributes — only bake web URLs,
+// never javascript:/data: etc. (esc() alone can't catch those)
+const isHttp = (u: string) => u.startsWith('https://') || u.startsWith('http://');
+
+function buildCard(slug: string, fm: Record<string, unknown>): Card {
+	const rawLinks = (fm.links ?? {}) as Record<string, unknown>;
+	const links: CardLink[] = [];
+	for (const kind of ['repo', 'linkedin', 'live', 'x'] as const) {
+		const url = rawLinks[kind];
+		if (typeof url === 'string' && isHttp(url)) links.push({ kind, label: kind, url });
+	}
+	if (Array.isArray(rawLinks.other))
+		for (const o of rawLinks.other as { label?: unknown; url?: unknown }[])
+			if (typeof o?.url === 'string' && isHttp(o.url))
+				links.push({ kind: 'other', label: String(o.label ?? 'link'), url: o.url });
+
+	const ytUrl =
+		typeof rawLinks.youtube === 'string' && isHttp(rawLinks.youtube) ? rawLinks.youtube : null;
+	const ytId = ytUrl ? videoId(ytUrl) : null;
+
+	const date = fm.date instanceof Date ? fm.date.toISOString().slice(0, 10) : String(fm.date ?? '');
+
+	// cover_logo is a path relative to the project folder; copy it where the
+	// client can fetch it. A missing file only warns here — astro's image()
+	// validation is the loud failure.
+	let logo: string | undefined;
+	if (typeof fm.cover_logo === 'string' && fm.cover_logo) {
+		const projectDir = resolve(CONTENT_DIR, slug);
+		const srcPath = resolve(projectDir, fm.cover_logo);
+		const ext = extname(srcPath).toLowerCase();
+		if (!srcPath.startsWith(projectDir + sep)) {
+			console.warn(`[graph] WARN cover_logo for "${slug}" escapes the project folder — skipped`);
+		} else if (!LOGO_EXTS.has(ext)) {
+			console.warn(`[graph] WARN cover_logo for "${slug}" is not an image (${ext}) — skipped`);
+		} else if (existsSync(srcPath)) {
+			const out = `${slug}${ext}`;
+			mkdirSync(OUT_CARDS, { recursive: true });
+			copyFileSync(srcPath, join(OUT_CARDS, out));
+			logo = `/graph-cards/${out}`;
+		} else {
+			console.warn(`[graph] WARN cover_logo not found for "${slug}": ${fm.cover_logo}`);
+		}
+	}
+
+	return {
+		outcome: String(fm.outcome ?? ''),
+		date,
+		tags: Array.isArray(fm.tags) ? fm.tags.map(String) : [],
+		stack: Array.isArray(fm.stack) ? fm.stack.map(String) : [],
+		links,
+		...(ytUrl && ytId ? { yt: { id: ytId, url: ytUrl } } : {}),
+		...(logo ? { logo } : {}),
+	};
+}
+
 function readProjects(): Project[] {
 	if (!existsSync(CONTENT_DIR)) return [];
+	rmSync(OUT_CARDS, { recursive: true, force: true }); // no stale logos
 	const projects: Project[] = [];
 	for (const dir of readdirSync(CONTENT_DIR, { withFileTypes: true })) {
 		if (!dir.isDirectory() || dir.name === '_template') continue;
@@ -55,6 +143,7 @@ function readProjects(): Project[] {
 			status: (fm.status as Status) ?? 'live',
 			tags: Array.isArray(fm.tags) ? fm.tags.map((t) => slugify(String(t))) : [],
 			stack: Array.isArray(fm.stack) ? fm.stack.map((s) => slugify(String(s))) : [],
+			card: buildCard(dir.name, fm),
 		});
 	}
 	return projects.sort((a, b) => a.slug.localeCompare(b.slug));
@@ -84,6 +173,7 @@ interface GNode {
 	y: number;
 	z: number;
 	r: number;
+	card?: Card;
 }
 interface GEdge {
 	source: string;
@@ -112,7 +202,7 @@ function buildGraph(projects: Project[]) {
 	const edges: GEdge[] = [];
 
 	for (const p of projects) {
-		nodes.push({ id: p.slug, kind: 'project', title: p.title, status: p.status, x: 0, y: 0, z: 0, r: 6 });
+		nodes.push({ id: p.slug, kind: 'project', title: p.title, status: p.status, x: 0, y: 0, z: 0, r: 6, card: p.card });
 		edges.push({ source: HUB_ID, target: p.slug, weight: 1 });
 	}
 	for (let i = 0; i < projects.length; i++)
@@ -225,6 +315,9 @@ const STATUS_COLOR: Record<Status, string> = {
 	paused: '#9CA3AF',
 };
 
+const escXml = (s: string) =>
+	s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
 function makeProjector(camera: ReturnType<typeof buildCameraAndAmbient>['camera']) {
 	const fwd = norm(camera.target.map((t, i) => t - camera.position[i]));
 	const right = norm(cross(fwd, camera.up));
@@ -280,9 +373,12 @@ function renderPoster(
 			}
 			const color = STATUS_COLOR[n.status ?? 'live'];
 			const coreOpacity = n.status === 'paused' ? 0.4 : 1;
+			const labelOpacity = n.status === 'paused' ? 0.5 : 0.85;
+			const labelFill = n.status === 'dead' ? '#C97070' : '#F4F4F5';
 			return (
 				`<circle cx="${p.x}" cy="${p.y}" r="${n.r * 2.4}" fill="${color}" opacity="0.10"/>` +
-				`<circle cx="${p.x}" cy="${p.y}" r="${n.r}" fill="${color}" opacity="${coreOpacity}"/>`
+				`<circle cx="${p.x}" cy="${p.y}" r="${n.r}" fill="${color}" opacity="${coreOpacity}"/>` +
+				`<text x="${p.x}" y="${p.y + n.r + 14}" fill="${labelFill}" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" letter-spacing="0.08em" text-anchor="middle" opacity="${labelOpacity}">${escXml(n.title.toUpperCase())}</text>`
 			);
 		})
 		.join('');
