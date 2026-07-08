@@ -31,12 +31,33 @@ outcome: Cut processing time from X to Y for a Z-person team.
 #   x: "https://x.com/..."
 #   other:                              # any other platform, one row each on the node card
 #     - label: Product Hunt
-#       url: "https://www.producthunt.com/..."
+#       url: "https://www.producthunt.com/"
+#     # ── GATED / TEST-ONLY PRODUCTS (standard — copy for every restricted app) ──
+#     # Use status: paused (shows ON ICE). Add Request beta access on the node card.
+#     # Prefer a Google Form URL (https://...) once created; mailto: works until then.
+#     # See HOW-TO-UPDATE-PROJECTS.md → "Test / beta access (standard)" in OneDrive.
+#     - label: Request beta access
+#       url: "mailto:piyushtater158@gmail.com?subject=My%20Project%20beta%20access%20request&body=Full%20name%3A%0A%0AAccount%20email%20(for%20sign-in)%3A%0A%0AAbout%20you%3A%0A%0AOrganization%3A%0A%0ARole%20in%20organization%3A%0A%0AWhy%20you%20need%20access%20(optional)%3A%0A"
 # hero_asset: ./assets/hero.png   # card thumbnail; put the file in this folder's assets/
 # cover_logo: ./assets/logo.png   # node-card identity image (top-left); square-ish works best
 ---
 
 Free-form MDX body — write the case study here. Plain markdown works.
+
+<!-- ── GATED / TEST-ONLY (standard block — include for every restricted app) ──
+     Delete this comment block for public projects. For test/beta apps:
+
+> **Test access only.** Sign-in at [your-live-url](https://...) is for approved testers.
+> If you are not on the list yet, apply below.
+
+## Apply for test access
+
+Use **Request beta access** (same link on the graph node card). Applicants should provide:
+about them, organization, role, and the account email they will use to sign in.
+
+You review manually and email approved users when they may sign in.
+See HOW-TO-UPDATE-PROJECTS.md in OneDrive for the full workflow.
+-->
 
 Put images in an `assets/` folder next to this file and reference them
 relatively, like this (kept as a code example — a real image line whose
