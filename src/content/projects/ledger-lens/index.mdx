@@ -1,0 +1,35 @@
+---
+title: Ledger Lens
+status: live
+date: 2026-07-02
+tags: [automation, finance]
+stack: [nextjs, n8n, typescript]
+outcome: Extracts invoice payee, bank account, and IFSC from spreadsheet Drive links or Gmail attachments with confidence-scored vision AI.
+links:
+  youtube: "https://youtu.be/CJeEJYP2iH4"
+  repo: "https://github.com/piyushtater158-cpu/Ledger_Lens"
+  live: "https://ledgerlens.piyushtater.com"
+org_context: Finance ops — bulk invoice processing from spreadsheets and email
+---
+
+## What it does
+
+Ledger Lens automates payee extraction from invoices. Upload a spreadsheet of Google Drive links, or scan Gmail for invoice attachments in a date range — either path runs each document through the same vision extraction pipeline and returns confidence-scored payee, account number, IFSC, and amount fields.
+
+## How it works
+
+1. **Sign in** with Google (`drive.readonly` + `gmail.readonly`).
+2. **Spreadsheet path** — upload `.xlsx`, auto-detect columns, process all rows, download the filled file.
+3. **Gmail path** — pick a date range and optional keyword; discover attachments, extract fields per row on the live dashboard.
+4. **Backend** — four n8n webhook workflows proxy to OpenRouter vision (`google/gemini-2.5-flash`). The user's Google token is forwarded per request and never stored in n8n.
+
+## What I built
+
+- Next.js 15 frontend on Vercel (OAuth, upload UI, live status table, single-row re-run)
+- n8n workflow suite (bulk extract, row re-run, Gmail discover, Gmail extract)
+- Smart column detection for common payee / IFSC / Drive link header patterns
+- Idempotent runs — rows already filled are skipped on re-upload
+
+## Stack
+
+Next.js · React · NextAuth · Tailwind · n8n · OpenRouter vision · Google Drive & Gmail APIs · Vercel
