@@ -4,7 +4,7 @@
  * camera pose as the SVG poster (graph.json), and reproduces the poster's
  * orthographic contain-mapping exactly, so the crossfade never moves a node.
  * v1 camera choreography is ONE move: scroll progress dollies (ortho zoom)
- * into the cluster. Mobile tap mode animates in place — dolly disabled.
+ * into the cluster. Narrow viewports animate in place — dolly disabled.
  */
 import * as THREE from 'three';
 // @ts-expect-error d3-force-3d ships no types
@@ -16,7 +16,7 @@ interface SimOptions {
 	mount: HTMLElement;
 	budget: number;
 	dolly: boolean;
-	interactive: boolean;
+	finePointer: boolean;
 }
 
 const POSTER_W = 1200;
@@ -45,7 +45,7 @@ function glowTexture(): THREE.Texture {
 	return tex;
 }
 
-export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) {
+export function startHeroSim({ mount, budget, dolly, finePointer }: SimOptions) {
 	const nodes = graph.nodes.map((n) => ({ ...n }));
 	const edges = graph.edges.map((e) => ({ ...e }));
 	const cam = graph.camera;
@@ -114,6 +114,44 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 		scene.add(sp);
 		sprites.push(sp);
 	});
+
+	// ── project name labels (hub uses the hero wordmark) ───────────────────
+	const labelLayer = document.createElement('div');
+	labelLayer.className = 'hero-labels';
+	mount.appendChild(labelLayer);
+	const labels: { el: HTMLSpanElement; sprite: THREE.Sprite }[] = [];
+	for (const sp of sprites) {
+		const n = sp.userData.node;
+		if (n.kind !== 'project') continue;
+		const el = document.createElement('span');
+		el.className = 'hero-label';
+		if (n.status) el.dataset.status = n.status;
+		el.textContent = n.title;
+		labelLayer.appendChild(el);
+		sp.userData.labelEl = el;
+		labels.push({ el, sprite: sp });
+	}
+	const labelPos = new THREE.Vector3();
+
+	function updateLabels() {
+		const w = mount.clientWidth;
+		const h = mount.clientHeight;
+		const viewH = camera.top - camera.bottom;
+		for (const { el, sprite } of labels) {
+			labelPos.copy(sprite.position);
+			labelPos.project(camera);
+			if (labelPos.z > 1) {
+				el.hidden = true;
+				continue;
+			}
+			el.hidden = false;
+			const x = (labelPos.x * 0.5 + 0.5) * w;
+			const y = (-labelPos.y * 0.5 + 0.5) * h;
+			const screenR = ((sprite.scale.y * 0.5) / viewH) * h;
+			el.style.left = `${x}px`;
+			el.style.top = `${y + screenR + 6}px`;
+		}
+	}
 
 	// ── edges ──────────────────────────────────────────────────────────────
 	const nodeIndex = new Map(nodes.map((n, i) => [n.id, i]));
@@ -211,31 +249,40 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 	let pointerActive = false;
 	let hovered: THREE.Sprite | null = null;
 	let card: ReturnType<typeof nodeCard> | null = null;
-	const tooltip = document.createElement('div');
-	tooltip.className = 'hero-tooltip';
-	tooltip.hidden = true;
-	mount.appendChild(tooltip);
 
-	if (interactive) {
+	if (finePointer) {
 		mount.addEventListener('pointermove', (e) => {
 			const r = renderer.domElement.getBoundingClientRect();
 			pointerNdc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
 			pointerActive = true;
-			tooltip.style.left = `${e.clientX - r.left + 14}px`;
-			tooltip.style.top = `${e.clientY - r.top + 10}px`;
 		});
 		mount.addEventListener('pointerleave', () => {
 			pointerActive = false;
 			pointerNdc.set(-10, -10);
 		});
-		renderer.domElement.addEventListener('click', () => {
-			const n = hovered?.userData.node;
-			if (n && n.kind === 'project') {
-				card ??= nodeCard();
-				card.open(n as CardNode);
-			}
-		});
 	}
+
+	function pickProject(clientX: number, clientY: number) {
+		const r = renderer.domElement.getBoundingClientRect();
+		pointerNdc.set(
+			((clientX - r.left) / r.width) * 2 - 1,
+			-((clientY - r.top) / r.height) * 2 + 1
+		);
+		raycaster.setFromCamera(pointerNdc, camera);
+		for (const hit of raycaster.intersectObjects(sprites, false)) {
+			const n = (hit.object as THREE.Sprite).userData.node;
+			if (n?.kind === 'project') return n as CardNode;
+		}
+		return null;
+	}
+
+	renderer.domElement.addEventListener('click', (e) => {
+		const n = pickProject(e.clientX, e.clientY);
+		if (n) {
+			card ??= nodeCard();
+			card.open(n);
+		}
+	});
 
 	// ── scroll dolly (native scroll; ONE camera move) ──────────────────────
 	const section = mount.closest('section') ?? mount;
@@ -318,8 +365,8 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 		}
 		pGeo.attributes.position.needsUpdate = true;
 
-		// hover bloom (violet — the reactive accent)
-		if (interactive && pointerActive) {
+		// hover bloom (violet — the reactive accent; fine pointer only)
+		if (finePointer && pointerActive) {
 			raycaster.setFromCamera(pointerNdc, camera);
 			const hits = raycaster.intersectObjects(sprites, false);
 			const top = (hits[0]?.object as THREE.Sprite) ?? null;
@@ -333,12 +380,13 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 			hovered = null;
 		}
 
+		updateLabels();
 		renderer.render(scene, camera);
 	}
 
 	const MAG_R = boundR * 0.35;
 	function applyMagnetism(p: THREE.Vector3) {
-		if (!pointerActive || !interactive) return;
+		if (!pointerActive || !finePointer) return;
 		const dx = pointerWorld.x - p.x;
 		const dy = pointerWorld.y - p.y;
 		const d2 = dx * dx + dy * dy;
@@ -355,13 +403,12 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 	function bloom(sp: THREE.Sprite) {
 		(sp.material as THREE.SpriteMaterial).color.copy(VIOLET);
 		renderer.domElement.style.cursor = 'pointer';
-		tooltip.textContent = sp.userData.node.title;
-		tooltip.hidden = false;
+		(sp.userData.labelEl as HTMLSpanElement | undefined)?.classList.add('is-hovered');
 	}
 	function unbloom(sp: THREE.Sprite) {
 		(sp.material as THREE.SpriteMaterial).color.copy(sp.userData.baseColor);
 		renderer.domElement.style.cursor = '';
-		tooltip.hidden = true;
+		(sp.userData.labelEl as HTMLSpanElement | undefined)?.classList.remove('is-hovered');
 	}
 
 	// pause off-screen / hidden tab
@@ -382,6 +429,7 @@ export function startHeroSim({ mount, budget, dolly, interactive }: SimOptions) 
 		disposed = true;
 		io.disconnect();
 		card?.dispose();
+		labelLayer.remove();
 		renderer.dispose();
 		renderer.domElement.remove();
 	};

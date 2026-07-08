@@ -315,6 +315,9 @@ const STATUS_COLOR: Record<Status, string> = {
 	paused: '#9CA3AF',
 };
 
+const escXml = (s: string) =>
+	s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
 function makeProjector(camera: ReturnType<typeof buildCameraAndAmbient>['camera']) {
 	const fwd = norm(camera.target.map((t, i) => t - camera.position[i]));
 	const right = norm(cross(fwd, camera.up));
@@ -370,9 +373,12 @@ function renderPoster(
 			}
 			const color = STATUS_COLOR[n.status ?? 'live'];
 			const coreOpacity = n.status === 'paused' ? 0.4 : 1;
+			const labelOpacity = n.status === 'paused' ? 0.5 : 0.85;
+			const labelFill = n.status === 'dead' ? '#C97070' : '#F4F4F5';
 			return (
 				`<circle cx="${p.x}" cy="${p.y}" r="${n.r * 2.4}" fill="${color}" opacity="0.10"/>` +
-				`<circle cx="${p.x}" cy="${p.y}" r="${n.r}" fill="${color}" opacity="${coreOpacity}"/>`
+				`<circle cx="${p.x}" cy="${p.y}" r="${n.r}" fill="${color}" opacity="${coreOpacity}"/>` +
+				`<text x="${p.x}" y="${p.y + n.r + 14}" fill="${labelFill}" font-family="'JetBrains Mono', ui-monospace, monospace" font-size="10" letter-spacing="0.08em" text-anchor="middle" opacity="${labelOpacity}">${escXml(n.title.toUpperCase())}</text>`
 			);
 		})
 		.join('');
