@@ -12,6 +12,8 @@ const WEBHOOK =
 	'https://n8n.piyushtater.com/webhook/bee9de3f-3761-48d4-9d51-b2ccbb25e29e/chat';
 const MAX_BODY = 8_192;
 
+export const config = { runtime: 'edge' };
+
 export default async function handler(req: Request): Promise<Response> {
 	if (req.method !== 'POST')
 		return new Response('method not allowed', { status: 405 });
