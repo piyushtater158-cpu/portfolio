@@ -15,6 +15,12 @@ interface Msg {
 	text: string;
 }
 
+// robot render size + hand-layer geometry (fractions of the body box),
+// measured from the generated mascot-full/mascot-hand assets
+const BTN_W = 88;
+const BTN_H = 133;
+const HAND = { left: 0.7419, top: 0.0983, width: 0.2473 };
+
 const STORE_MSGS = 'mascot-chat-msgs';
 const STORE_SESSION = 'mascot-chat-session';
 const STORE_GREETED = 'mascot-chat-greeted';
@@ -22,52 +28,71 @@ const MAX_STORED = 40;
 
 const CSS = `
 .mascot-btn {
+	/* hand geometry (fractions of the button box) — set from the generated
+	   assets by scripts that bake mascot-full/mascot-hand; see PR notes */
+	--hand-left: ${HAND.left};
+	--hand-top: ${HAND.top};
+	--hand-w: ${HAND.width};
 	position: fixed;
-	left: 1rem;
-	bottom: 1rem;
+	right: 1rem;
+	bottom: 0.75rem;
 	z-index: 15;
-	width: 64px;
-	height: 64px;
+	width: ${BTN_W}px;
+	height: ${BTN_H}px;
 	padding: 0;
-	border: 1px solid var(--hairline);
-	border-radius: 50%;
-	background: var(--bg-raised);
+	border: 0;
+	background: transparent;
 	cursor: pointer;
 	animation: mc-bob 4.5s var(--ease-in-out) infinite;
-	transition: border-color var(--duration-micro) var(--ease-out),
-		box-shadow var(--duration-micro) var(--ease-out);
+	filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--bg) 70%, transparent));
+	transition: filter var(--duration-micro) var(--ease-out);
 }
-.mascot-btn img {
+.mascot-btn .m-body {
 	display: block;
 	width: 100%;
 	height: 100%;
-	border-radius: 50%;
+}
+.mascot-btn .m-hand {
+	position: absolute;
+	left: calc(var(--hand-left) * 100%);
+	top: calc(var(--hand-top) * 100%);
+	width: calc(var(--hand-w) * 100%);
+	transform-origin: 50% 88%;
+	animation: mc-hand-sway 3.2s var(--ease-in-out) infinite;
 }
 .mascot-btn:hover {
-	border-color: color-mix(in srgb, var(--accent-2) 60%, var(--hairline));
-	box-shadow: 0 0 18px 0 color-mix(in srgb, var(--accent-2) 25%, transparent);
+	filter: drop-shadow(0 0 16px color-mix(in srgb, var(--accent-2) 45%, transparent));
 }
-.mascot-btn.is-waving {
-	animation: mc-wave 0.9s var(--ease-in-out);
+.mascot-btn:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 4px;
+	border-radius: var(--radius);
+}
+.mascot-btn.is-waving .m-hand {
+	animation: mc-hand-wave 0.9s var(--ease-in-out);
 }
 @keyframes mc-bob {
 	0%, 100% { transform: translateY(0); }
 	50% { transform: translateY(-5px); }
 }
-@keyframes mc-wave {
+@keyframes mc-hand-sway {
+	0%, 100% { transform: rotate(-5deg); }
+	50% { transform: rotate(7deg); }
+}
+@keyframes mc-hand-wave {
 	0%, 100% { transform: rotate(0); }
-	20% { transform: rotate(-14deg) scale(1.06); }
-	40% { transform: rotate(12deg) scale(1.06); }
-	60% { transform: rotate(-10deg) scale(1.04); }
-	80% { transform: rotate(8deg); }
+	20% { transform: rotate(-18deg); }
+	45% { transform: rotate(16deg); }
+	70% { transform: rotate(-14deg); }
+	88% { transform: rotate(10deg); }
 }
 @media (prefers-reduced-motion: reduce) {
-	.mascot-btn, .mascot-btn.is-waving { animation: none; }
+	.mascot-btn, .mascot-btn .m-hand, .mascot-btn.is-waving .m-hand { animation: none; }
 }
 .mascot-hi {
 	position: fixed;
-	left: calc(1rem + 64px + 0.6rem);
-	bottom: calc(1rem + 14px);
+	right: calc(1rem + ${BTN_W}px + 0.6rem);
+	bottom: calc(0.75rem + ${Math.round(BTN_H * 0.55)}px);
 	z-index: 15;
 	padding: 0.45rem 0.7rem;
 	background: var(--bg-raised);
@@ -78,7 +103,7 @@ const CSS = `
 	letter-spacing: 0.06em;
 	color: var(--text-dim);
 	opacity: 0;
-	transform: translateX(-6px);
+	transform: translateX(6px);
 	transition: opacity var(--duration-reveal) var(--ease-out),
 		transform var(--duration-reveal) var(--ease-out);
 	pointer-events: none;
@@ -87,13 +112,13 @@ const CSS = `
 .mascot-hi .wave { color: var(--accent); }
 .mascot-panel {
 	position: fixed;
-	left: 1rem;
-	bottom: calc(1rem + 64px + 0.75rem);
+	right: 1rem;
+	bottom: calc(0.75rem + ${BTN_H}px + 0.6rem);
 	z-index: 15;
 	display: flex;
 	flex-direction: column;
 	width: min(360px, calc(100vw - 2rem));
-	height: min(480px, calc(100dvh - 64px - 3rem));
+	height: min(480px, calc(100dvh - ${BTN_H}px - 3rem));
 	background: var(--bg-raised);
 	border: 1px solid var(--hairline);
 	border-radius: var(--radius);
@@ -244,7 +269,7 @@ const CSS = `
 		left: 0.75rem;
 		right: 0.75rem;
 		width: auto;
-		height: min(480px, calc(100dvh - 64px - 2.5rem));
+		height: min(480px, calc(100dvh - ${BTN_H}px - 2.5rem));
 	}
 }
 `;
@@ -378,7 +403,9 @@ function create(): MascotChat {
 	btn.className = 'mascot-btn';
 	btn.setAttribute('aria-label', 'Chat with the site assistant');
 	btn.setAttribute('aria-expanded', 'false');
-	btn.innerHTML = `<img src="/mascot.webp" alt="" width="64" height="64">`;
+	btn.innerHTML = `
+		<img class="m-body" src="/mascot-full.webp" alt="" width="${BTN_W}" height="${BTN_H}">
+		<img class="m-hand" src="/mascot-hand.webp" alt="" aria-hidden="true">`;
 
 	const hi = document.createElement('div');
 	hi.className = 'mascot-hi';
@@ -525,7 +552,7 @@ function create(): MascotChat {
 
 	btn.addEventListener('click', toggle);
 	btn.addEventListener('animationend', (e) => {
-		if (e.animationName === 'mc-wave') btn.classList.remove('is-waving');
+		if (e.animationName === 'mc-hand-wave') btn.classList.remove('is-waving');
 	});
 	panel.querySelector('.mc-close')!.addEventListener('click', close);
 	form.addEventListener('submit', (e) => {

@@ -11,9 +11,10 @@ export const site = {
 		linkedin: 'https://www.linkedin.com/in/applied-genai',
 	},
 	chat: {
-		// n8n Chat Trigger endpoint — its "Allowed Origins (CORS)" list must
-		// include every origin this site serves from (localhost, *.vercel.app).
-		webhook:
-			'https://n8n.piyushtater.com/webhook/bee9de3f-3761-48d4-9d51-b2ccbb25e29e/chat',
+		// same-origin Vercel function (api/chat.ts) that relays to the n8n
+		// Chat Trigger server-side — the webhook's CORS allowlist doesn't
+		// include this site's origins, so the browser never calls it directly.
+		// Not served by `astro dev`; verify chat on a preview deploy.
+		webhook: '/api/chat',
 	},
 } as const;
