@@ -30,6 +30,23 @@ const { title = site.title, description = site.description } = Astro.props;
 		<footer>
 			<ContactCTA />
 		</footer>
+		<script>
+			// Mascot chat — lazy, after the page is idle, so it never competes
+			// with the hero/poster for LCP. JS-only enhancement by design.
+			const idle =
+				'requestIdleCallback' in window
+					? (cb: () => void) => requestIdleCallback(cb, { timeout: 3000 })
+					: (cb: () => void) => setTimeout(cb, 1500);
+			addEventListener(
+				'load',
+				() =>
+					idle(async () => {
+						const { mascotChat } = await import('../scripts/mascot-chat');
+						mascotChat();
+					}),
+				{ once: true }
+			);
+		</script>
 	</body>
 </html>
 
