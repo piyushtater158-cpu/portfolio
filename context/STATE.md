@@ -2,7 +2,7 @@
 
 > Read this file at the START of every session. Update it at the END of any session that changed code, content, decisions, or deployment. Append one entry to `context/LOG.md` per session. Rules for maintaining this file are in CLAUDE.md → "Session protocol".
 
-Last updated: 2026-07-11 (mascot chat widget session)
+Last updated: 2026-07-11 (mascot chat shipped #16)
 
 ## Where the project stands
 
@@ -12,17 +12,14 @@ Stack: Astro 7 + bun + TypeScript, three.js/d3-force-3d hero island, Vercel depl
 
 All five build sessions in TODOS.md are complete. QA health 100 (was 97), design review A− (was B+). Lighthouse mobile: 0.99 auto path / LCP 1.72s; reduced-motion path 1.0 / LCP 1.19s; CLS 0.001; poster `<img>` is the LCP element on both paths — every performance contract from the design docs is met.
 
-Since then: node-card pipeline merged (#12); first real project **Ledger Lens** live with beta-access application flow (#13, #14); beta-access norm documented (`chore/beta-access-norm`).
-
-**In flight (branch `feat/mascot-chat`, user-requested 2026-07-11):** mascot chatbot — fixed robot avatar bottom-left on every page (`public/mascot.webp`, circular sharp crop of the user's robot JPEG), idle bob + wave-on-click, compact chat panel wired to the n8n Chat Trigger webhook (`site.chat.webhook` in `src/config.ts`) with streaming NDJSON rendering, sessionStorage history, mobile bottom sheet. Lazy-mounted post-load from `Base.astro`. Verified locally end-to-end except the live browser send, which is **CORS-blocked: the n8n Chat Trigger's Allowed Origins is `https://pustarter.com` only** — user must add the portfolio origins (see blocked list).
+Since then: node-card pipeline merged (#12); first real project **Ledger Lens** live with beta-access application flow (#13, #14); beta-access norm documented (`chore/beta-access-norm`); **mascot chatbot shipped (#16)** — full-body robot avatar bottom-right on every page, compact chat panel wired through `api/chat.ts` (Vercel Edge proxy → n8n Chat Trigger webhook), streaming NDJSON, sessionStorage history, lazy-mounted post-load from `Base.astro`. Verified on production: mascot visible on home + case pages, `/api/chat` 200, end-to-end chat reply in browser. No n8n CORS changes needed — browser never calls the webhook directly.
 
 ## Blocked on the user (nothing else blocks launch-completeness)
 
-1. **3 real projects** — `src/content/projects/` contains only `_template/`. No content is fabricated, per contract. Needed per project: title, status, date, tags, stack, one-sentence outcome, links (YouTube/LinkedIn/live/repo), optional images.
+1. **3 real projects** — `src/content/projects/` contains only `_template/` plus Ledger Lens. No content is fabricated, per contract. Needed per project: title, status, date, tags, stack, one-sentence outcome, links (YouTube/LinkedIn/live/repo), optional images.
 2. **Live phone test** — verify file create / folder trick / image upload per GitHub mobile surface, THEN write the README phone-workflow section (docs/design/02, Next Step 2). A failed test is an immediate trigger for the upgrade path.
-3. **LinkedIn URL** — placeholder pending in `src/config.ts` (footer CTA).
+3. **LinkedIn URL** — set in `src/config.ts` (footer CTA); currently populated.
 4. **Custom domain** — still an open question from the design docs; site runs on the vercel.app URL.
-5. **Chat webhook CORS** — in n8n, open the Chat Trigger node of the support-agent workflow and set "Allowed Origins (CORS)" to include `http://localhost:4321`, `https://portfolio-rho-wheat-94.vercel.app`, and the Vercel preview origins (or `*`). Until then the mascot chat shows its connection-failed message in the browser.
 
 ## Deferred (known, deliberate)
 
