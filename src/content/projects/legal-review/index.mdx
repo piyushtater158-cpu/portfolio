@@ -1,0 +1,57 @@
+---
+title: Legal Review
+status: paused
+date: 2026-07-21
+tags: [automation, legal]
+stack: [nextjs, n8n, typescript, ai]
+outcome: Flags irregularities, unlawful clauses, and provisions that do not favor a party in a contract.
+links:
+  youtube: "https://youtu.be/EvAlzqHh18c"
+  repo: "https://github.com/piyushtater158-cpu/intelligent-legal-review"
+  live: "https://legalreview.piyushtater.com"
+  other:
+    - label: Request beta access
+      url: "mailto:piyushtater158@gmail.com?subject=Legal%20Review%20beta%20access%20request&body=Full%20name%3A%0A%0ACompany%20or%20organization%3A%0A%0APosition%20%2F%20role%20in%20organization%3A%0A%0AWhat%20you%20want%20to%20know%20%2F%20why%20you%20need%20access%3A%0A%0ARelevant%20details%20for%20evaluation%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A"
+org_context: Indian employment contracts — educational compliance review, not legal advice
+---
+
+> **Test access only.** Legal Review is in private beta. Sign-in at [legalreview.piyushtater.com](https://legalreview.piyushtater.com) is for approved testers. If you are not on the list yet, apply below.
+
+## Apply for test access
+
+Use the **[Request beta access](mailto:piyushtater158@gmail.com?subject=Legal%20Review%20beta%20access%20request&body=Full%20name%3A%0A%0ACompany%20or%20organization%3A%0A%0APosition%20%2F%20role%20in%20organization%3A%0A%0AWhat%20you%20want%20to%20know%20%2F%20why%20you%20need%20access%3A%0A%0ARelevant%20details%20for%20evaluation%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A)** link (also on the project card in the graph). Your email app will open with a short template — fill in:
+
+- Your full name
+- Your company or organization name
+- Your position / role in that organization
+- What you want to know or try, and why you need access
+- Any details relevant to evaluating your request
+- The **Google account email** access should be granted on (used for sign-in)
+
+I review applications manually and reply within a few business days. If approved, I email you when your account can sign in.
+
+**Prefer a form?** A Google Form intake is being set up; until then, the email link above is the application path. Fallback: [piyushtater158@gmail.com](mailto:piyushtater158@gmail.com) with subject `Legal Review beta access request`.
+
+---
+
+## What it does
+
+Legal Review analyzes employment contracts and flags irregularities, unlawful clauses, and provisions that do not favor a party. Upload a contract, get a structured review with statute citations and suggested compliant wording — built as an educational compliance tool, not legal advice.
+
+## How it works
+
+1. **Upload** an employment contract (PDF or text).
+2. **Rule pack** — the system checks against 16 verified Indian statutory rules (Contract Act §27, IDA, Gratuity Act, Maternity Benefit Act, POSH, DPDP, and more).
+3. **Findings** — clause-diff cards show the original language, verdict, and suggested fix with word-level redline.
+4. **Eval-backed** — golden set of 8 contracts with seeded violations; held-out recall at 85% (+13pp vs a same-model naive baseline).
+
+## What I built
+
+- Next.js frontend on Vercel (upload UI, redline report, Google sign-in for authorized users)
+- Rule-pack driven review API with structured JSON findings
+- Transparent eval harness (present-clause vs missing-clause recall, false-positive budget)
+- n8n workflow for batch / Slack-triggered contract processing
+
+## Stack
+
+Next.js · TypeScript · n8n · Claude / Anthropic · Zod · Vercel
