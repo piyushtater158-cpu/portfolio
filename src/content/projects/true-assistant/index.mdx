@@ -1,0 +1,59 @@
+---
+title: True Assistant
+status: paused
+date: 2026-06-22
+tags: [automation, agents]
+stack: [n8n, typescript, ai]
+outcome: Closed-source company AI platform that keeps data off external model providers, records meetings with transcripts, and answers questions about company decisions in real time.
+links:
+  youtube: "https://youtu.be/f_BHTE9T81E"
+  repo: "https://github.com/piyushtater158-cpu/ai-meeting-assistant"
+  live: "https://trueassistant.piyushtater.com"
+  other:
+    - label: Request beta access
+      url: "mailto:piyushtater158@gmail.com?subject=True%20Assistant%20beta%20access%20request&body=Full%20name%3A%0A%0ACompany%20or%20organization%3A%0A%0APosition%20%2F%20role%20in%20organization%3A%0A%0AWhat%20you%20want%20to%20know%20%2F%20why%20you%20need%20access%3A%0A%0ARelevant%20details%20for%20evaluation%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A"
+org_context: Company-wide meeting ops and grounded AI assistant — invite-only pilot
+---
+
+> **Test access only.** True Assistant is in private beta. Sign-in at [trueassistant.piyushtater.com](https://trueassistant.piyushtater.com) is for approved testers. If you are not on the list yet, apply below.
+
+## Apply for test access
+
+Use the **[Request beta access](mailto:piyushtater158@gmail.com?subject=True%20Assistant%20beta%20access%20request&body=Full%20name%3A%0A%0ACompany%20or%20organization%3A%0A%0APosition%20%2F%20role%20in%20organization%3A%0A%0AWhat%20you%20want%20to%20know%20%2F%20why%20you%20need%20access%3A%0A%0ARelevant%20details%20for%20evaluation%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A)** link (also on the project card in the graph). Your email app will open with a short template — fill in:
+
+- Your full name
+- Your company or organization name
+- Your position / role in that organization
+- What you want to know or try, and why you need access
+- Any details relevant to evaluating your request
+- The **Google account email** access should be granted on (used for sign-in)
+
+I review applications manually and reply within a few business days. If approved, I email you when your account can sign in.
+
+**Prefer a form?** A Google Form intake is being set up; until then, the email link above is the application path. Fallback: [piyushtater158@gmail.com](mailto:piyushtater158@gmail.com) with subject `True Assistant beta access request`.
+
+---
+
+## What it does
+
+True Assistant (also shown in demos as Meeting-Ops / Kaira) is a closed-source company AI platform. Because it is closed source and self-hosted on infrastructure you control, the company does not need to share data with external model providers. Use it company-wide for AI-driven work: every meeting is recorded and transcribed, and an assistant can answer questions about the company database or past decisions in real time — with human approval before agentic actions go live.
+
+## How it works
+
+1. **Sign in** with a Google work account (invited pilot users only).
+2. **Capture** — a bot joins calls, transcribes, and stores meeting memory.
+3. **Extract + trust gate** — dual-pass extraction of decisions and action items; approved items sync to tools (e.g. Slack) with an audit trail.
+4. **Ask** — grounded Q&A across meetings ("what did we decide about X in January?").
+5. **Approve** — routine agent actions (scheduling, follow-ups) stay behind a human-in-the-loop UI.
+
+## What I built
+
+- Meeting-Ops review UI on Vercel with Google OAuth for pilot users
+- n8n orchestration on a controlled VPS for capture, extraction, sync, and Q&A
+- Hybrid memory in Supabase (Postgres + pgvector) for cross-meeting recall
+- Human approval path so agentic writes never ship without a person in the loop
+- Closed-source deploy path so company data stays on infrastructure you control
+
+## Stack
+
+n8n · TypeScript · Supabase · self-hosted AI · Vercel

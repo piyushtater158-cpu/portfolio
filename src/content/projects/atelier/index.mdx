@@ -1,0 +1,57 @@
+---
+title: Atelier
+status: paused
+date: 2026-04-28
+tags: [automation, design]
+stack: [n8n, react, ai]
+outcome: Lets interior designers use AI to generate designs, pitch clients in sales, and improve prospecting, closing, and client confidence.
+links:
+  youtube: "https://youtu.be/kFIbIeAInGs"
+  repo: "https://github.com/piyushtater158-cpu/interior-design-RAG"
+  live: "https://atelier.piyushtater.com/"
+  other:
+    - label: Request beta access
+      url: "mailto:piyushtater158@gmail.com?subject=Atelier%20beta%20access%20request&body=Full%20name%3A%0A%0ACompany%20or%20organization%3A%0A%0APosition%20%2F%20role%20in%20organization%3A%0A%0AWhat%20you%20want%20to%20know%20%2F%20why%20you%20need%20access%3A%0A%0ARelevant%20details%20for%20evaluation%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A"
+org_context: Interior design studios — mobile design assistant with RAG-grounded drafts
+---
+
+> **Test access only.** Atelier is in private beta. Sign-in at [atelier.piyushtater.com](https://atelier.piyushtater.com/) is for approved testers. If you are not on the list yet, apply below.
+
+## Apply for test access
+
+Use the **[Request beta access](mailto:piyushtater158@gmail.com?subject=Atelier%20beta%20access%20request&body=Full%20name%3A%0A%0ACompany%20or%20organization%3A%0A%0APosition%20%2F%20role%20in%20organization%3A%0A%0AWhat%20you%20want%20to%20know%20%2F%20why%20you%20need%20access%3A%0A%0ARelevant%20details%20for%20evaluation%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A)** link (also on the project card in the graph). Your email app will open with a short template — fill in:
+
+- Your full name
+- Your company or organization name
+- Your position / role in that organization
+- What you want to know or try, and why you need access
+- Any details relevant to evaluating your request
+- The **Google account email** access should be granted on (used for sign-in)
+
+I review applications manually and reply within a few business days. If approved, I email you when your account can sign in.
+
+**Prefer a form?** A Google Form intake is being set up; until then, the email link above is the application path. Fallback: [piyushtater158@gmail.com](mailto:piyushtater158@gmail.com) with subject `Atelier beta access request`.
+
+---
+
+## What it does
+
+Atelier is a mobile interior design studio for designers who need to move fast in sales. Upload a room, describe a mood, and get a draft in seconds — then iterate and pitch with confidence. The point is better prospecting, stronger closes, and clients who trust what they see because the designs stay grounded in real, buildable references.
+
+## How it works
+
+1. **Sign in** and open the mobile studio (canvas, library, profile).
+2. **Upload + brief** — room photo and mood description drive the generation request.
+3. **RAG grounding** — n8n webhooks retrieve from a Supabase catalog of real reference designs (full-text retrieval), then remix via OpenRouter / Gemini so outputs stay feasible instead of hallucinated furniture and impossible geometry.
+4. **Draft → iterate → commit** without leaving the conversation flow.
+
+## What I built
+
+- Mobile PWA / static studio shell pointed at n8n webhooks and Supabase auth
+- Reference-image catalog in Postgres with FTS retrieval (`retrieve_candidates_text`)
+- n8n orchestration for captioning, retrieval, and generation
+- Seed pipeline for styled reference folders into the catalog
+
+## Stack
+
+React · n8n · Supabase · OpenRouter · Gemini · Vercel
