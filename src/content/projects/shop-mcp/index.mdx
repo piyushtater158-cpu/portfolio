@@ -1,0 +1,44 @@
+---
+title: Shop Inside AI Chat
+status: live
+date: 2026-07-23
+tags: [automation, ecommerce]
+stack: [typescript, ai]
+outcome: Renders a live Shopify product grid — images, prices, buy links — inside Claude or ChatGPT via MCP so shoppers browse and buy without leaving chat.
+org_context: Agentic commerce — Shopify Storefront API inside AI chat (Skybridge / Alpic)
+links:
+  youtube: "https://www.youtube.com/shorts/aUf4Mz6GkiE"
+  linkedin: "https://www.linkedin.com/posts/applied-genai_ai-agenticai-modelcontextprotocol-ugcPost-7468309193926619137-GmpU"
+  live: "https://shop-mcp-de69b9e7.alpic.live/mcp"
+  repo: "https://github.com/piyushtater158-cpu/SHOP-MCP"
+hero_asset: ./assets/hero.jpeg
+---
+
+## What it does
+
+Shop Inside AI Chat puts a real Shopify storefront inside the conversation. Ask Claude or ChatGPT for products and a live grid renders in chat — images, prices, vendors, buy links — with no new tabs and no redirects. Commerce stays in the AI surface instead of bouncing shoppers out to a separate site.
+
+## How it works
+
+1. **MCP connector** — a Skybridge app on Alpic exposes a `shopify-search` tool that Claude/ChatGPT can call.
+2. **Live catalog** — the tool queries Shopify’s Storefront API (GraphQL) for real product data from the connected store.
+3. **Inline UI** — the MCP response returns the product grid UI itself, so cards render in the chat window rather than on a separate page.
+4. **Stateless server** — every request stands alone, so the deploy scales like ordinary web infra (no sticky sessions).
+5. **Connect to AI** — a storefront widget points shoppers at a one-click install page for the custom connector.
+
+## What I built
+
+- TypeScript MCP server (`shopify-search` tool + Storefront API client)
+- Inline product-grid view for chat (Skybridge)
+- Alpic production deploy with Storefront domain/token env vars
+- Local verify script and tunnel flow for Claude connector testing
+
+## Try it
+
+Add the live connector as a custom connector in Claude (Settings → Connectors) or ChatGPT (Connectors; Plus/Pro/Team/Enterprise), then ask something like “Show me products.”
+
+Live MCP URL: [shop-mcp-de69b9e7.alpic.live/mcp](https://shop-mcp-de69b9e7.alpic.live/mcp)
+
+## Stack
+
+TypeScript · Skybridge · Alpic · Shopify Storefront API (GraphQL) · MCP
