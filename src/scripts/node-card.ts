@@ -10,6 +10,8 @@
  * own CTA is the case study.
  */
 import { thumbUrl, thumbUrlMax } from '../lib/youtube';
+import { isBetaAccessLink } from '../lib/beta-access';
+import { stackChipsHtml, STACK_CHIP_CSS } from '../lib/stack-icons';
 
 export interface CardLink {
 	kind: 'repo' | 'linkedin' | 'live' | 'x' | 'other';
@@ -88,6 +90,11 @@ const CSS = `
 }
 @media (prefers-reduced-motion: reduce) {
 	.node-card { animation: none; }
+	/* static emphasis instead of the pulse — the CTA stays findable */
+	.nc-foot a {
+		animation: none;
+		box-shadow: 0 0 10px 0 color-mix(in srgb, var(--accent) 22%, transparent);
+	}
 }
 .nc-head {
 	display: flex;
@@ -228,10 +235,23 @@ const CSS = `
 	display: inline-flex;
 	align-items: center;
 	min-height: 44px;
+	padding-inline: 0.9rem;
 	color: var(--accent);
 	text-decoration: none;
 	font-size: 0.8rem;
 	letter-spacing: 0.06em;
+	border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--hairline));
+	border-radius: var(--radius);
+	/* 2.4s: deliberately out of phase with the card's 3.2s breathe */
+	animation: nc-cta-pulse 2.4s var(--ease-in-out) infinite;
+}
+@keyframes nc-cta-pulse {
+	0%, 100% { box-shadow: 0 0 0 0 transparent; }
+	50% {
+		box-shadow:
+			0 0 14px 2px color-mix(in srgb, var(--accent) 38%, transparent),
+			inset 0 0 8px 0 color-mix(in srgb, var(--accent) 10%, transparent);
+	}
 }
 .nc-foot a:hover { text-decoration: underline; }
 .node-card :is(a, button):focus-visible {
@@ -252,6 +272,11 @@ const CSS = `
 	.nc-left { order: 2; }
 	.nc-logo { max-width: 220px; }
 }
+.nc-rows .nc-stack {
+	display: flex;
+	align-items: baseline;
+}
+${STACK_CHIP_CSS}
 `;
 
 const esc = (s: string) =>
@@ -306,7 +331,11 @@ function create(): NodeCard {
 				? `<ul class="nc-links">${linkRows
 						.map(
 							(l) =>
-								`<li><a href="${esc(safeUrl(l.url))}"${externalLinkAttrs(l.url)}>${ICONS[l.kind] ?? ICONS.other}<span class="u">${esc(l.label)}</span></a></li>`
+								`<li><a href="${esc(safeUrl(l.url))}"${externalLinkAttrs(l.url)}${
+									l.kind === 'other' && isBetaAccessLink(l.label, l.url)
+										? ` data-beta data-mailto="${esc(l.url)}"`
+										: ''
+								}>${ICONS[l.kind] ?? ICONS.other}<span class="u">${esc(l.label)}</span></a></li>`
 						)
 						.join('')}</ul>`
 				: '';
@@ -315,7 +344,7 @@ function create(): NodeCard {
 			`<div><span class="k">status</span><span class="status-${esc(status)}">${esc(status)}</span></div>`,
 			c?.date ? `<div><span class="k">date</span>${esc(c.date)}</div>` : '',
 			c?.tags.length ? `<div><span class="k">tags</span>${esc(c.tags.join(' · '))}</div>` : '',
-			c?.stack.length ? `<div><span class="k">stack</span>${esc(c.stack.join(' · '))}</div>` : '',
+			c?.stack.length ? `<div class="nc-stack"><span class="k">stack</span>${stackChipsHtml(c.stack)}</div>` : '',
 		].join('');
 
 		const video =
@@ -360,6 +389,15 @@ function create(): NodeCard {
 			);
 
 		card.querySelector('.nc-close')!.addEventListener('click', close);
+
+		// beta-access links open the instructions modal (stacked above the
+		// card) instead of jumping straight to the mail client
+		card.querySelector<HTMLAnchorElement>('a[data-beta]')?.addEventListener('click', async (e) => {
+			e.preventDefault();
+			const mailto = (e.currentTarget as HTMLElement).dataset.mailto ?? '';
+			const { betaAccessModal } = await import('./beta-access-modal');
+			betaAccessModal().open({ mailto, projectTitle: node.title });
+		});
 	}
 
 	function onKeydown(e: KeyboardEvent) {

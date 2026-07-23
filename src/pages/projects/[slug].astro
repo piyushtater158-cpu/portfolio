@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import StatusBadge from '../../components/StatusBadge.astro';
 import LiteYouTube from '../../components/LiteYouTube.astro';
+import { stackChipsHtml, STACK_CHIP_CSS } from '../../lib/stack-icons';
 
 export async function getStaticPaths() {
 	const projects = await getCollection('projects');
@@ -60,7 +61,7 @@ const dateLabel = date.toISOString().slice(0, 10);
 				</div>
 				<div>
 					<dt>stack</dt>
-					<dd>{stack.join(', ')}</dd>
+					<dd><Fragment set:html={stackChipsHtml(stack)} /></dd>
 				</div>
 				{
 					org_context && (
@@ -93,7 +94,30 @@ const dateLabel = date.toISOString().slice(0, 10);
 			<Content />
 		</div>
 	</article>
+
+	{/* chip styles are a shared JS constant (also injected by the node card) —
+	    Astro's scoped <style> can't interpolate it, so inline via set:html */}
+	<Fragment set:html={`<style>${STACK_CHIP_CSS}</style>`} />
 </Base>
+
+<script>
+	// Progressive enhancement for the beta-access norm: a prose link labelled
+	// "Request beta access" opens the instructions modal instead of jumping
+	// straight to the mail client. With JS disabled the untouched mailto href
+	// still opens the prefilled draft.
+	import { BETA_ACCESS_LABEL } from '../../lib/beta-access';
+
+	const wanted = BETA_ACCESS_LABEL.toLowerCase();
+	for (const a of document.querySelectorAll<HTMLAnchorElement>('a[href^="mailto:"]')) {
+		if (a.textContent?.trim().toLowerCase() !== wanted) continue;
+		a.addEventListener('click', async (e) => {
+			e.preventDefault();
+			const { betaAccessModal } = await import('../../scripts/beta-access-modal');
+			const title = document.querySelector('h1')?.textContent?.trim() || undefined;
+			betaAccessModal().open({ mailto: a.href, projectTitle: title });
+		});
+	}
+</script>
 
 <style>
 	article {

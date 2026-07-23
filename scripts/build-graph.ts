@@ -20,6 +20,7 @@ import { parse as parseYaml } from 'yaml';
 // @ts-expect-error d3-force-3d ships no types
 import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force-3d';
 import { videoId } from '../src/lib/youtube';
+import { slugify } from '../src/lib/stack-icons';
 
 const ROOT = join(import.meta.dir, '..');
 const CONTENT_DIR = join(ROOT, 'src', 'content', 'projects');
@@ -62,13 +63,6 @@ interface Project {
 	stack: string[];
 	card: Card;
 }
-
-const slugify = (s: string) =>
-	s
-		.toLowerCase()
-		.trim()
-		.replace(/[\s_]+/g, '-')
-		.replace(/[^a-z0-9-]/g, '');
 
 // card link URLs land in client-side href attributes — only bake web URLs,
 // never javascript:/data: etc. (esc() alone can't catch those)

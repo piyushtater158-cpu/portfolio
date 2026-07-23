@@ -14,6 +14,11 @@ date: 2026-01-01
 
 # at least one of each; lowercase, hyphenated. Reuse existing tags where
 # possible — a tag used by only one project won't connect in the graph.
+# Stack entries with a known icon render as brand-colored chips; anything
+# else renders as a plain text chip — you never HAVE to add an icon.
+# Known icon slugs (src/lib/stack-icons.ts): nextjs, n8n, typescript,
+# python, bun, react, tailwindcss (alias tailwind), vercel, astro,
+# threejs (alias three), ai (aliases openrouter, gemini, llm).
 tags: [automation]
 stack: [python]
 
@@ -31,12 +36,37 @@ outcome: Cut processing time from X to Y for a Z-person team.
 #   x: "https://x.com/..."
 #   other:                              # any other platform, one row each on the node card
 #     - label: Product Hunt
-#       url: "https://www.producthunt.com/..."
+#       url: "https://www.producthunt.com/"
+#     # ── GATED / TEST-ONLY PRODUCTS (standard — copy for every restricted app) ──
+#     # Use status: paused (shows ON ICE). Add Request beta access on the node card.
+#     # The exact label "Request beta access" + a mailto URL triggers the
+#     # instructions modal (node card AND case page) listing what applicants
+#     # must send: name, organization, position/role, why, evaluation details,
+#     # and the Google account email access is granted on (src/lib/beta-access.ts).
+#     # Prefer a Google Form URL (https://...) once created; mailto: works until then.
+#     # See HOW-TO-UPDATE-PROJECTS.md → "Test / beta access (standard)" in OneDrive.
+#     - label: Request beta access
+#       url: "mailto:piyushtater158@gmail.com?subject=My%20Project%20beta%20access%20request&body=Full%20name%3A%0A%0ACompany%20or%20organization%3A%0A%0APosition%20%2F%20role%20in%20organization%3A%0A%0AWhat%20you%20want%20to%20know%20%2F%20why%20you%20need%20access%3A%0A%0ARelevant%20details%20for%20evaluation%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A"
 # hero_asset: ./assets/hero.png   # card thumbnail; put the file in this folder's assets/
 # cover_logo: ./assets/logo.png   # node-card identity image (top-left); square-ish works best
 ---
 
 Free-form MDX body — write the case study here. Plain markdown works.
+
+<!-- ── GATED / TEST-ONLY (standard block — include for every restricted app) ──
+     Delete this comment block for public projects. For test/beta apps:
+
+> **Test access only.** Sign-in at [your-live-url](https://...) is for approved testers.
+> If you are not on the list yet, apply below.
+
+## Apply for test access
+
+Use **Request beta access** (same link on the graph node card). Applicants should provide:
+about them, organization, role, and the account email they will use to sign in.
+
+You review manually and email approved users when they may sign in.
+See HOW-TO-UPDATE-PROJECTS.md in OneDrive for the full workflow.
+-->
 
 Put images in an `assets/` folder next to this file and reference them
 relatively, like this (kept as a code example — a real image line whose

@@ -2,7 +2,7 @@
 
 > Read this file at the START of every session. Update it at the END of any session that changed code, content, decisions, or deployment. Append one entry to `context/LOG.md` per session. Rules for maintaining this file are in CLAUDE.md → "Session protocol".
 
-Last updated: 2026-07-11 (mascot chat shipped #16)
+Last updated: 2026-07-23 (card polish: CTA glow, beta-access modal, stack icon chips — feat/card-polish)
 
 ## Where the project stands
 
@@ -13,6 +13,8 @@ Stack: Astro 7 + bun + TypeScript, three.js/d3-force-3d hero island, Vercel depl
 All five build sessions in TODOS.md are complete. QA health 100 (was 97), design review A− (was B+). Lighthouse mobile: 0.99 auto path / LCP 1.72s; reduced-motion path 1.0 / LCP 1.19s; CLS 0.001; poster `<img>` is the LCP element on both paths — every performance contract from the design docs is met.
 
 Since then: node-card pipeline merged (#12); first real project **Ledger Lens** live with beta-access application flow (#13, #14); beta-access norm documented (`chore/beta-access-norm`); **mascot chatbot shipped (#16)** — full-body robot avatar bottom-right on every page, compact chat panel wired through `api/chat.ts` (Vercel Edge proxy → n8n Chat Trigger webhook), streaming NDJSON, sessionStorage history, lazy-mounted post-load from `Base.astro`. Verified on production: mascot visible on home + case pages, `/api/chat` 200, end-to-end chat reply in browser. No n8n CORS changes needed — browser never calls the webhook directly.
+
+Card polish (2026-07-23, feat/card-polish): node-card "open case study →" CTA now pulses cyan (2.4s, out of phase with the card breathe; static glow under reduced motion). "Request beta access" links (label-keyed norm, `src/lib/beta-access.ts`) open an instructions modal (`src/scripts/beta-access-modal.ts`, singleton stacking above the node card at z-30; mailto href untouched = no-JS fallback) listing what applicants must email. Stack renders as brand-colored icon chips (`src/lib/stack-icons.ts`, simple-icons CC0 paths, unknown slugs → text chips; user explicitly overrode DESIGN.md's monochrome rule for these). build-graph now imports slugify from stack-icons (byte-identical graph.json verified). Beta-access norm docs (branch `chore/beta-access-norm`) folded in.
 
 ## Blocked on the user (nothing else blocks launch-completeness)
 
