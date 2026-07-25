@@ -6,9 +6,27 @@ import { site } from '../config';
 interface Props {
 	title?: string;
 	description?: string;
+	/** Absolute or root-relative image for social previews. */
+	image?: string;
 }
 
-const { title = site.title, description = site.description } = Astro.props;
+const { title = site.seoTitle, description = site.description, image = site.ogImage } =
+	Astro.props;
+
+// Absolute URLs — required for canonical, Open Graph, and JSON-LD.
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = new URL(image, Astro.site);
+
+// Person entity — the strongest signal that this domain IS "Piyush Tater".
+const personSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: site.name,
+	url: site.url,
+	jobTitle: site.jobTitle,
+	email: `mailto:${site.contact.email}`,
+	sameAs: site.sameAs,
+};
 ---
 
 <html lang="en">
@@ -18,8 +36,27 @@ const { title = site.title, description = site.description } = Astro.props;
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<meta name="description" content={description} />
 		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="author" content={site.name} />
+		<link rel="canonical" href={canonical} />
+
+		<!-- Open Graph -->
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={site.name} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={imageUrl} />
+		<meta property="og:locale" content="en_US" />
+
+		<!-- Twitter / X -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={imageUrl} />
+
+		<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
 		<slot name="head" />
 	</head>
 	<body>
