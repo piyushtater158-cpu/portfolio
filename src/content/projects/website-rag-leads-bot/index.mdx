@@ -1,0 +1,36 @@
+---
+title: Website RAG + Leads Bot
+status: live
+date: 2026-07-25
+tags: [automation, rag]
+stack: [n8n, supabase, ai]
+outcome: Shipped a production RAG chatbot with lead capture and real-time alerts on my site — zero custom website backend, two script tags, all logic in n8n.
+org_context: Built for PUSTARTER.COM — self-hosted n8n, Supabase pgvector RAG, Gemini embeddings, OpenRouter chat
+links:
+  youtube: "https://youtu.be/XmAgTFot7Ww"
+  live: "https://piyushtater.com"
+  repo: "https://github.com/piyushtater158-cpu/pustarter-ai-chatbot"
+---
+
+## What it does
+
+A production AI chatbot that answers visitor questions from the site’s own content (RAG), captures leads (name + email) with database-level validation, and sends real-time notifications via email and Telegram — with no custom backend on the website.
+
+## How it works
+
+1. **Embed** — two script tags load the chat widget on the site; visitors enter name and email before chatting.
+2. **Webhook** — the widget posts messages to a self-hosted n8n production webhook.
+3. **RAG** — an n8n AI Agent retrieves relevant chunks from Supabase pgvector (Gemini embeddings) and replies with OpenRouter (Gemini 2.5 Flash).
+4. **Leads** — name and email are stored in Supabase with validation; alerts fire over email/Telegram.
+5. **Ops** — PII handling, RLS, and credential hygiene stay in the n8n + Supabase layer, not in site code.
+
+## What I built
+
+- Self-hosted n8n workflows for chat, RAG retrieval, lead capture, and notifications
+- Supabase pgvector knowledge base with Gemini embeddings
+- Embeddable chat widget (two script tags, zero custom website backend)
+- Production-grade lead storage with DB-level validation and real-time alerts
+
+## Stack
+
+n8n (self-hosted) · Supabase (pgvector RAG) · Google Gemini embeddings · OpenRouter (Gemini 2.5 Flash)
