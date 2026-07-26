@@ -7,9 +7,8 @@ interface Props {
 	project: CollectionEntry<'projects'>;
 	index: number;
 }
-
 const { project, index } = Astro.props;
-const { title, status, date, outcome, tags, hero_asset } = project.data;
+const { title, status, date, outcome, tags, hero_asset, cover_logo } = project.data;
 
 const dateLabel = date.toISOString().slice(0, 10);
 ---
@@ -17,7 +16,11 @@ const dateLabel = date.toISOString().slice(0, 10);
 <li class:list={['row', status]} style={`--stagger: ${index * 50}ms`}>
 	<a href={`/projects/${project.id}/`} data-project={project.id}>
 		{
-			hero_asset ? (
+			cover_logo ? (
+				<div class="thumb logo" aria-hidden="true">
+					<Image src={cover_logo} alt="" width={160} height={100} />
+				</div>
+			) : hero_asset ? (
 				<Image class="thumb" src={hero_asset} alt="" width={160} height={100} />
 			) : (
 				<div class:list={['thumb', 'tile', status]} aria-hidden="true">
@@ -80,6 +83,22 @@ const dateLabel = date.toISOString().slice(0, 10);
 		border: 1px solid var(--hairline);
 		border-radius: var(--radius);
 	}
+	.thumb.logo {
+		display: grid;
+		place-items: center;
+		padding: 0.55rem;
+		box-sizing: border-box;
+		overflow: hidden;
+		object-fit: unset;
+		background: var(--bg-raised);
+	}
+	.thumb.logo :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		object-position: center;
+		mix-blend-mode: multiply;
+	}
 	.tile {
 		display: grid;
 		place-items: center;
@@ -128,6 +147,9 @@ const dateLabel = date.toISOString().slice(0, 10);
 		.thumb {
 			width: 96px;
 			height: 64px;
+		}
+		.thumb.logo {
+			padding: 0.35rem;
 		}
 	}
 </style>
