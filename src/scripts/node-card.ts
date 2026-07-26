@@ -133,15 +133,19 @@ const CSS = `
 	aspect-ratio: 4 / 3;
 	display: grid;
 	place-items: center;
+	padding: 0.55rem;
+	box-sizing: border-box;
 	border: 1px solid var(--hairline);
 	border-radius: var(--radius);
-	background: var(--bg);
+	background: var(--bg-raised);
 	overflow: hidden;
 }
 .nc-logo img {
 	width: 100%;
 	height: 100%;
-	object-fit: cover;
+	object-fit: contain;
+	object-position: center;
+	mix-blend-mode: multiply;
 }
 .nc-logo span {
 	font-size: var(--text-lg);
