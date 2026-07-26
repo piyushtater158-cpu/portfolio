@@ -135,9 +135,13 @@ const CSS = `
 	place-items: center;
 	padding: 0.55rem;
 	box-sizing: border-box;
-	border: 1px solid var(--hairline);
+	border: 1px solid color-mix(in srgb, var(--accent) 45%, #c8cedd);
 	border-radius: var(--radius);
-	background: var(--bg-raised);
+	/* Cool light plate — contrasts dark UI so navy/yellow marks read clearly */
+	background: linear-gradient(160deg, #f7f8fc 0%, #e6e9f2 100%);
+	box-shadow:
+		inset 0 0 0 1px color-mix(in srgb, #fff 70%, transparent),
+		0 0 18px 0 color-mix(in srgb, var(--accent) 18%, transparent);
 	overflow: hidden;
 }
 .nc-logo img {
@@ -145,7 +149,6 @@ const CSS = `
 	height: 100%;
 	object-fit: contain;
 	object-position: center;
-	mix-blend-mode: multiply;
 }
 .nc-logo span {
 	font-size: var(--text-lg);

@@ -18,7 +18,7 @@ const dateLabel = date.toISOString().slice(0, 10);
 		{
 			cover_logo ? (
 				<div class="thumb logo" aria-hidden="true">
-					<Image src={cover_logo} alt="" width={160} height={100} />
+					<Image src={cover_logo} alt="" width={320} height={200} widths={[160, 320]} sizes="160px" quality={90} />
 				</div>
 			) : hero_asset ? (
 				<Image class="thumb" src={hero_asset} alt="" width={160} height={100} />
@@ -90,14 +90,18 @@ const dateLabel = date.toISOString().slice(0, 10);
 		box-sizing: border-box;
 		overflow: hidden;
 		object-fit: unset;
-		background: var(--bg-raised);
+		/* Cool light plate — contrasts dark homepage so navy/yellow marks read clearly */
+		background: linear-gradient(160deg, #f7f8fc 0%, #e6e9f2 100%);
+		border-color: color-mix(in srgb, var(--accent) 45%, #c8cedd);
+		box-shadow:
+			inset 0 0 0 1px color-mix(in srgb, #fff 70%, transparent),
+			0 0 18px 0 color-mix(in srgb, var(--accent) 18%, transparent);
 	}
 	.thumb.logo :global(img) {
 		width: 100%;
 		height: 100%;
 		object-fit: contain;
 		object-position: center;
-		mix-blend-mode: multiply;
 	}
 	.tile {
 		display: grid;
