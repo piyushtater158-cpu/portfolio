@@ -1,0 +1,60 @@
+---
+title: Dunnly
+status: paused
+date: 2026-08-29
+tags: [automation, finance]
+stack: [n8n, nextjs, typescript, bun]
+outcome: Walks one overdue invoice through pull, AI draft, email + WhatsApp send, reply classify, and Teams escalate — hybrid Power Automate path verified 7/7.
+org_context: AR collections autopilot — n8n + Next.js dashboard, human approve-before-send
+links:
+  youtube: "https://youtu.be/k1OQCrkiGLE"
+  repo: "https://github.com/piyushtater158-cpu/dunnly"
+  live: "https://dunnly.piyushtater.com"
+  other:
+    - label: Request beta access
+      url: "mailto:piyushtater158@gmail.com?subject=Dunnly%20beta%20access%20request&body=Full%20name%3A%0A%0ACompany%20or%20organization%3A%0A%0APosition%20%2F%20role%20in%20organization%3A%0A%0AWhat%20you%20want%20to%20know%20%2F%20why%20you%20need%20access%3A%0A%0ARelevant%20details%20for%20evaluation%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A"
+cover_logo: ./assets/logo.jpeg
+---
+
+> **Test access only.** Dunnly is in private beta. Sign-in at [dunnly.piyushtater.com](https://dunnly.piyushtater.com) is for approved testers. If you are not on the list yet, apply below.
+
+## Apply for test access
+
+Use the **[Request beta access](mailto:piyushtater158@gmail.com?subject=Dunnly%20beta%20access%20request&body=Full%20name%3A%0A%0ACompany%20or%20organization%3A%0A%0APosition%20%2F%20role%20in%20organization%3A%0A%0AWhat%20you%20want%20to%20know%20%2F%20why%20you%20need%20access%3A%0A%0ARelevant%20details%20for%20evaluation%3A%0A%0AGoogle%20account%20email%20(for%20sign-in)%3A%0A)** link (also on the project card in the graph). Your email app will open with a short template — fill in:
+
+- Your full name
+- Your company or organization name
+- Your position / role in that organization
+- What you want to know or try, and why you need access
+- Any details relevant to evaluating your request
+- The **Google account email** access should be granted on (used for sign-in)
+
+I review applications manually and reply within a few business days. If approved, I email you when your account can sign in.
+
+**Prefer a form?** A Google Form intake is being set up; until then, the email link above is the application path. Fallback: [piyushtater158@gmail.com](mailto:piyushtater158@gmail.com) with subject `Dunnly beta access request`.
+
+---
+
+## What it does
+
+Dunnly is an AI autopilot for accounts-receivable collections. It pulls overdue invoices, drafts the reminder, sends it over email and WhatsApp, reads the customer reply, classifies it, and escalates the ones that matter to finance in Teams — logging every step.
+
+## How it works
+
+1. **Pull** — overdue invoices land in a Next.js dashboard as queued.
+2. **Draft** — n8n writes the email and WhatsApp reminder with AI. A human hits approve (auto-send stays off).
+3. **Send** — email goes Power Automate → Gmail; WhatsApp goes out on the same approve.
+4. **Inbound** — the customer replies on WhatsApp; a webhook flips the row to replied with no click.
+5. **Classify + escalate** — the reply is classified (promise / dispute / paid / no reply). Teams gets a card in the matching channel; the sheet gets the writeback.
+
+## What I built
+
+- Next.js dashboard with a six-stage pipeline (queued → drafted → sent → replied → classified → notified)
+- n8n workflows for pull, draft, send, classify, and inbound WhatsApp
+- Hybrid send path: Power Automate → Gmail, plus Teams webhooks for escalations, disputes, and payments
+- Human-approval gate on send
+- Eval suite on draft and classify prompts (both passed)
+
+## Stack
+
+n8n · Next.js · TypeScript · Bun · Power Automate · Gmail · WhatsApp · Microsoft Teams · Google Sheets

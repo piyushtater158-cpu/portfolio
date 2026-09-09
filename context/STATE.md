@@ -2,26 +2,24 @@
 
 > Read this file at the START of every session. Update it at the END of any session that changed code, content, decisions, or deployment. Append one entry to `context/LOG.md` per session. Rules for maintaining this file are in CLAUDE.md → "Session protocol".
 
-Last updated: 2026-07-23 (card polish: CTA glow, beta-access modal, stack icon chips — feat/card-polish)
+Last updated: 2026-09-09 (add Dunnly case study — branch `add-project-dunnly`)
 
 ## Where the project stands
 
-**v1 is LIVE:** https://portfolio-rho-wheat-94.vercel.app
+**v1 is LIVE:** https://piyushtater.com (also https://portfolio-rho-wheat-94.vercel.app)
 Repo: https://github.com/piyushtater158-cpu/portfolio (public, branch protection on `main`, PR + Vercel check required)
 Stack: Astro 7 + bun + TypeScript, three.js/d3-force-3d hero island, Vercel deploys.
 
 All five build sessions in TODOS.md are complete. QA health 100 (was 97), design review A− (was B+). Lighthouse mobile: 0.99 auto path / LCP 1.72s; reduced-motion path 1.0 / LCP 1.19s; CLS 0.001; poster `<img>` is the LCP element on both paths — every performance contract from the design docs is met.
 
-Since then: node-card pipeline merged (#12); first real project **Ledger Lens** live with beta-access application flow (#13, #14); beta-access norm documented (`chore/beta-access-norm`); **mascot chatbot shipped (#16)** — full-body robot avatar bottom-right on every page, compact chat panel wired through `api/chat.ts` (Vercel Edge proxy → n8n Chat Trigger webhook), streaming NDJSON, sessionStorage history, lazy-mounted post-load from `Base.astro`. Verified on production: mascot visible on home + case pages, `/api/chat` 200, end-to-end chat reply in browser. No n8n CORS changes needed — browser never calls the webhook directly.
-
-Card polish (2026-07-23, feat/card-polish): node-card "open case study →" CTA now pulses cyan (2.4s, out of phase with the card breathe; static glow under reduced motion). "Request beta access" links (label-keyed norm, `src/lib/beta-access.ts`) open an instructions modal (`src/scripts/beta-access-modal.ts`, singleton stacking above the node card at z-30; mailto href untouched = no-JS fallback) listing what applicants must email. Stack renders as brand-colored icon chips (`src/lib/stack-icons.ts`, simple-icons CC0 paths, unknown slugs → text chips; user explicitly overrode DESIGN.md's monochrome rule for these). build-graph now imports slugify from stack-icons (byte-identical graph.json verified). Beta-access norm docs (branch `chore/beta-access-norm`) folded in.
+Since then: node-card pipeline merged (#12); Ledger Lens + other real projects live with beta-access application flow; mascot chatbot shipped (#16); card polish (CTA glow, beta-access modal, stack icon chips). **Dunnly** staged on branch `add-project-dunnly` (paused / ON ICE, demo video + logo + beta access) pending merge.
 
 ## Blocked on the user (nothing else blocks launch-completeness)
 
-1. **3 real projects** — `src/content/projects/` contains only `_template/` plus Ledger Lens. No content is fabricated, per contract. Needed per project: title, status, date, tags, stack, one-sentence outcome, links (YouTube/LinkedIn/live/repo), optional images.
+1. **Merge Dunnly PR** — preview check → merge `add-project-dunnly` when green.
 2. **Live phone test** — verify file create / folder trick / image upload per GitHub mobile surface, THEN write the README phone-workflow section (docs/design/02, Next Step 2). A failed test is an immediate trigger for the upgrade path.
-3. **LinkedIn URL** — set in `src/config.ts` (footer CTA); currently populated.
-4. **Custom domain** — still an open question from the design docs; site runs on the vercel.app URL.
+3. **LinkedIn URL** — set in `src/config.ts` (footer CTA); currently populated. Dunnly LinkedIn post still TBD (skip for now).
+4. **Custom domain** — site runs on piyushtater.com; open questions from design docs may remain for other surfaces.
 
 ## Deferred (known, deliberate)
 
@@ -49,11 +47,11 @@ Card polish (2026-07-23, feat/card-polish): node-card "open case study →" CTA 
 - Living System direction, proof-of-pipeline scope, files-not-database, poster-first paint, device gates, public repo: all decided in the two approved design docs (session records inside them). The user deliberately rejected a CMS/admin panel (chose GitHub-as-panel) and overrode a B+C recommendation to do it — do not re-propose a CMS; the upgrade triggers are data-driven and written down.
 - Concept videos (Veo 3.1, moodboard + LinkedIn teaser, NOT a site asset): OneDrive `...\Claude\Projects\Portfolio\Video references\edit\` (master_16x9.mp4, vertical_9x16.mp4).
 - OpenRouter + ElevenLabs keys: OneDrive `...\Claude\Projects\Portfolio\.env.txt` (rename to `.env` if ever moved; never commit).
+- Dunnly (2026-09-09): system works but deliberately ON ICE (`status: paused`); live URL `https://dunnly.piyushtater.com`; no LinkedIn post yet; standard beta-access mailto pattern.
 
 ## Next actions (in order)
 
-1. User writes raw material for project #1 (links + 5 outcome bullets) → agent drafts frontmatter+MDX on a branch → preview → merge. Repeat ×3. Re-time the 15-minute Tuesday test with the first real one.
+1. Merge Dunnly PR after Vercel preview looks good.
 2. User runs the phone test → write README phone workflow from what actually worked.
-3. Set LinkedIn URL in `src/config.ts`.
-4. Decide domain; attach in Vercel.
-5. Post the vertical concept video + live URL on LinkedIn (launch moment).
+3. Optional: add Dunnly LinkedIn post URL when published.
+4. Post the vertical concept video + live URL on LinkedIn (launch moment) if not done.
