@@ -14,11 +14,11 @@ All five build sessions in TODOS.md are complete. QA health 100 (was 97), design
 
 Since then: node-card pipeline merged (#12); Ledger Lens + other real projects live with beta-access application flow; mascot chatbot shipped (#16); card polish (CTA glow, beta-access modal, stack icon chips). **Dunnly** merged (#27) — paused / ON ICE, demo video + logo + beta access, live at https://dunnly.piyushtater.com.
 
-**SEO / GEO (2026-09-21):** Homepage + per-project meta titles/descriptions; optional `seo_title` / `seo_description` frontmatter; sitemap filter excludes `tmp-*` + `lastmod` from project dates; `public/llms.txt` for generative engines; Person + WebSite + SoftwareApplication JSON-LD. Search Console HTML-meta hook is in `src/config.ts` (`googleSiteVerification`) — empty until user pastes the GSC token.
+**SEO / GEO (2026-09-21):** Homepage + per-project meta titles/descriptions; optional `seo_title` / `seo_description` frontmatter; sitemap filter excludes `tmp-*` + `lastmod` from project dates; `public/llms.txt` for generative engines; Person + WebSite + SoftwareApplication JSON-LD. GSC HTML-file verification: `public/googled121980685bac5cf.html` (also keep `googleSiteVerification` meta hook empty unless switching methods).
 
 ## Blocked on the user (nothing else blocks launch-completeness)
 
-1. **Google Search Console** — create URL-prefix property `https://piyushtater.com`, paste HTML-tag token into `site.googleSiteVerification`, redeploy, Verify, then submit `https://piyushtater.com/sitemap-index.xml`.
+1. **Google Search Console** — merge SEO PR so `https://piyushtater.com/googled121980685bac5cf.html` is live, then Verify (HTML file method). After verify: submit `https://piyushtater.com/sitemap-index.xml`.
 2. **Live phone test** — verify file create / folder trick / image upload per GitHub mobile surface, THEN write the README phone-workflow section (docs/design/02, Next Step 2). A failed test is an immediate trigger for the upgrade path.
 3. **LinkedIn URL** — set in `src/config.ts` (footer CTA); currently populated. Dunnly LinkedIn post still TBD (skip for now).
 

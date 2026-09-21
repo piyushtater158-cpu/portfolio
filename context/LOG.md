@@ -34,3 +34,6 @@ Merged PR #27 to main (delete branch). Dunnly live on portfolio as paused/beta w
 
 ## 2026-09-21 — SEO / GEO / Search Console prep (seo/gsc-geo-meta)
 Shipped meta titles/descriptions (home + seven projects via optional `seo_title`/`seo_description`), sitemap `tmp-*` filter + project `lastmod`, `public/llms.txt`, Person+WebSite+SoftwareApplication JSON-LD, and empty `googleSiteVerification` hook in config. Build verified: sitemap lists `/` + 7 real projects only. Blocked on user: create GSC property, paste HTML-tag token, verify, submit `sitemap-index.xml`.
+
+## 2026-09-21 — GSC HTML verification file
+User chose HTML-file verification (not meta tag). Added `public/googled121980685bac5cf.html` from their Downloads file. Needs merge to main before Verify succeeds on piyushtater.com.
