@@ -32,6 +32,9 @@ const projects = defineCollection({
 			outcome: z
 				.string()
 				.min(1, 'outcome is required — one sentence; for dead projects, what killed it'),
+			// Optional SEO overrides — omit to use title / outcome in <title> and meta description.
+			seo_title: z.string().min(1).optional(),
+			seo_description: z.string().min(1).optional(),
 			org_context: z.string().optional(),
 			links: z
 				.object({

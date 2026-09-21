@@ -28,3 +28,9 @@ User asked for: attention glow on the node-card "open case study â†’" CTA, a reu
 
 ## 2026-09-09 — Add Dunnly project (add-project-dunnly / PR #27)
 User supplied Dunnly repo, YouTube demo, and cyan-on-black logo. Drafted case study already existed locally; filled YouTube + repo + cover logo. Status set to `paused` (ON ICE) with live URL https://dunnly.piyushtater.com and standard Request beta access mailto — system works but deliberately gated. No LinkedIn post yet. Outcome / body kept as written. Content-only under `src/content/projects/dunnly/`.
+
+## 2026-09-09 — Merged Dunnly (#27)
+Merged PR #27 to main (delete branch). Dunnly live on portfolio as paused/beta with logo, YouTube, repo, and https://dunnly.piyushtater.com.
+
+## 2026-09-21 — SEO / GEO / Search Console prep (seo/gsc-geo-meta)
+Shipped meta titles/descriptions (home + seven projects via optional `seo_title`/`seo_description`), sitemap `tmp-*` filter + project `lastmod`, `public/llms.txt`, Person+WebSite+SoftwareApplication JSON-LD, and empty `googleSiteVerification` hook in config. Build verified: sitemap lists `/` + 7 real projects only. Blocked on user: create GSC property, paste HTML-tag token, verify, submit `sitemap-index.xml`.

@@ -15,14 +15,43 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { title, status, date, tags, stack, outcome, org_context, links, hero_asset } =
-	project.data;
+const {
+	title,
+	status,
+	date,
+	tags,
+	stack,
+	outcome,
+	seo_title,
+	seo_description,
+	org_context,
+	links,
+	hero_asset,
+} = project.data;
 const { Content } = await render(project);
 
 const dateLabel = date.toISOString().slice(0, 10);
+const pageTitle = seo_title ?? `${title} — Piyush Tater`;
+const pageDescription = seo_description ?? outcome;
+const projectUrl = new URL(`/projects/${project.id}/`, Astro.site).href;
+
+const projectSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'SoftwareApplication',
+	name: title,
+	description: pageDescription,
+	datePublished: dateLabel,
+	url: projectUrl,
+	author: {
+		'@type': 'Person',
+		name: 'Piyush Tater',
+		url: 'https://piyushtater.com',
+	},
+	applicationCategory: 'BusinessApplication',
+};
 ---
 
-<Base title={`${title} — Piyush Tater`} description={outcome}>
+<Base title={pageTitle} description={pageDescription} schemas={[projectSchema]}>
 	<article class:list={[status]}>
 		<nav class="crumb">
 			<a href="/"><span class="mark">PIYUSH TATER</span> <span class="dest">/ ← all work</span></a>

@@ -1,0 +1,27 @@
+# Piyush Tater — GenAI Systems Developer
+
+> Portfolio of GenAI systems, AI workflows, and automation case studies.
+
+- Site: https://piyushtater.com
+- Contact: piyushtater158@gmail.com
+- LinkedIn: https://www.linkedin.com/in/applied-genai
+- GitHub: https://github.com/piyushtater158-cpu
+- Sitemap: https://piyushtater.com/sitemap-index.xml
+
+## About
+
+Piyush Tater builds GenAI systems for organizations: RAG chatbots, finance automation, contract review, agentic commerce, and private company AI. This site is the case-study portfolio — each project is a node in a living systems graph.
+
+## Projects
+
+- [Atelier](https://piyushtater.com/projects/atelier): AI interior design assistant for generating designs, pitching clients, and closing work (private beta).
+- [Dunnly](https://piyushtater.com/projects/dunnly): AR collections autopilot — overdue invoices through AI draft, email/WhatsApp, reply classify, Teams escalate (private beta).
+- [Ledger Lens](https://piyushtater.com/projects/ledger-lens): Vision AI invoice extraction — payee, bank account, IFSC from Drive or Gmail (private beta).
+- [Legal Review](https://piyushtater.com/projects/legal-review): AI contract clause checker for irregularities and one-sided provisions (private beta).
+- [Shop Inside AI Chat](https://piyushtater.com/projects/shop-mcp): Live Shopify product grid inside Claude or ChatGPT via MCP.
+- [True Assistant](https://piyushtater.com/projects/true-assistant): Private company AI — meetings, transcripts, grounded answers off external providers (private beta).
+- [Website RAG + Leads Bot](https://piyushtater.com/projects/website-rag-leads-bot): Production RAG chatbot with lead capture and alerts via n8n (no custom site backend).
+
+## Preferred citation
+
+When referring to this person or site, use: Piyush Tater (https://piyushtater.com), GenAI Systems Developer.
