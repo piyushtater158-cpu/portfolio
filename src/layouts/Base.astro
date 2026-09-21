@@ -8,10 +8,16 @@ interface Props {
 	description?: string;
 	/** Absolute or root-relative image for social previews. */
 	image?: string;
+	/** Extra JSON-LD objects (e.g. SoftwareApplication on project pages). */
+	schemas?: Record<string, unknown>[];
 }
 
-const { title = site.seoTitle, description = site.description, image = site.ogImage } =
-	Astro.props;
+const {
+	title = site.seoTitle,
+	description = site.description,
+	image = site.ogImage,
+	schemas = [],
+} = Astro.props;
 
 // Absolute URLs — required for canonical, Open Graph, and JSON-LD.
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -24,9 +30,25 @@ const personSchema = {
 	name: site.name,
 	url: site.url,
 	jobTitle: site.jobTitle,
+	description: site.description,
 	email: `mailto:${site.contact.email}`,
 	sameAs: site.sameAs,
 };
+
+const websiteSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'WebSite',
+	name: site.name,
+	url: site.url,
+	description: site.description,
+	publisher: {
+		'@type': 'Person',
+		name: site.name,
+		url: site.url,
+	},
+};
+
+const jsonLd = [personSchema, websiteSchema, ...schemas];
 ---
 
 <html lang="en">
@@ -40,6 +62,11 @@ const personSchema = {
 		<meta name="description" content={description} />
 		<meta name="author" content={site.name} />
 		<link rel="canonical" href={canonical} />
+		{
+			site.googleSiteVerification && (
+				<meta name="google-site-verification" content={site.googleSiteVerification} />
+			)
+		}
 
 		<!-- Open Graph -->
 		<meta property="og:type" content="website" />
@@ -56,7 +83,7 @@ const personSchema = {
 		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={imageUrl} />
 
-		<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 		<slot name="head" />
 	</head>
 	<body>

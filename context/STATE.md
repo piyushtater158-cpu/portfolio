@@ -2,7 +2,7 @@
 
 > Read this file at the START of every session. Update it at the END of any session that changed code, content, decisions, or deployment. Append one entry to `context/LOG.md` per session. Rules for maintaining this file are in CLAUDE.md → "Session protocol".
 
-Last updated: 2026-09-09 (add Dunnly case study — branch `add-project-dunnly`)
+Last updated: 2026-09-21 (SEO / GEO / Search Console prep — branch seo/gsc-geo-meta)
 
 ## Where the project stands
 
@@ -12,20 +12,21 @@ Stack: Astro 7 + bun + TypeScript, three.js/d3-force-3d hero island, Vercel depl
 
 All five build sessions in TODOS.md are complete. QA health 100 (was 97), design review A− (was B+). Lighthouse mobile: 0.99 auto path / LCP 1.72s; reduced-motion path 1.0 / LCP 1.19s; CLS 0.001; poster `<img>` is the LCP element on both paths — every performance contract from the design docs is met.
 
-Since then: node-card pipeline merged (#12); Ledger Lens + other real projects live with beta-access application flow; mascot chatbot shipped (#16); card polish (CTA glow, beta-access modal, stack icon chips). **Dunnly** staged on branch `add-project-dunnly` (paused / ON ICE, demo video + logo + beta access) pending merge.
+Since then: node-card pipeline merged (#12); Ledger Lens + other real projects live with beta-access application flow; mascot chatbot shipped (#16); card polish (CTA glow, beta-access modal, stack icon chips). **Dunnly** merged (#27) — paused / ON ICE, demo video + logo + beta access, live at https://dunnly.piyushtater.com.
+
+**SEO / GEO (2026-09-21):** Homepage + per-project meta titles/descriptions; optional `seo_title` / `seo_description` frontmatter; sitemap filter excludes `tmp-*` + `lastmod` from project dates; `public/llms.txt` for generative engines; Person + WebSite + SoftwareApplication JSON-LD. GSC HTML-file verification: `public/googled121980685bac5cf.html` (also keep `googleSiteVerification` meta hook empty unless switching methods).
 
 ## Blocked on the user (nothing else blocks launch-completeness)
 
-1. **Merge Dunnly PR** — preview check → merge `add-project-dunnly` when green.
+1. **Google Search Console** — merge SEO PR so `https://piyushtater.com/googled121980685bac5cf.html` is live, then Verify (HTML file method). After verify: submit `https://piyushtater.com/sitemap-index.xml`.
 2. **Live phone test** — verify file create / folder trick / image upload per GitHub mobile surface, THEN write the README phone-workflow section (docs/design/02, Next Step 2). A failed test is an immediate trigger for the upgrade path.
 3. **LinkedIn URL** — set in `src/config.ts` (footer CTA); currently populated. Dunnly LinkedIn post still TBD (skip for now).
-4. **Custom domain** — site runs on piyushtater.com; open questions from design docs may remain for other surfaces.
 
 ## Deferred (known, deliberate)
 
 - `THREE.Clock` → `THREE.Timer` in `src/scripts/hero-sim.ts` (deprecation, low; breaks on a future three.js major).
 - ISSUE-002 from QA (same THREE.Clock item).
-- Post-v1 triggers (do NOT build until a trigger fires — docs/design/02): agent-drafting workflow (project unwritten >2 weeks); Sveltia/Pages CMS (>2 frontmatter-typo PR failures/month). v2 backlog: semantic query layer + llms.txt, ElevenLabs narration, multi-scene camera.
+- Post-v1 triggers (do NOT build until a trigger fires — docs/design/02): agent-drafting workflow (project unwritten >2 weeks); Sveltia/Pages CMS (>2 frontmatter-typo PR failures/month). v2 backlog: semantic query layer (beyond shipped `llms.txt`), ElevenLabs narration, multi-scene camera.
 
 ## Key map
 
@@ -40,6 +41,8 @@ Since then: node-card pipeline merged (#12); Ledger Lens + other real projects l
 | Hero sim | `src/scripts/hero-sim.ts` |
 | Content schema + entries | `src/content/projects/` |
 | Poster | `public/constellation.svg` (generated) |
+| GEO brief for AI crawlers | `public/llms.txt` |
+| GSC verification token | `src/config.ts` → `googleSiteVerification` |
 | Session history | `context/LOG.md` |
 
 ## Decision provenance (why things are the way they are)
@@ -48,10 +51,11 @@ Since then: node-card pipeline merged (#12); Ledger Lens + other real projects l
 - Concept videos (Veo 3.1, moodboard + LinkedIn teaser, NOT a site asset): OneDrive `...\Claude\Projects\Portfolio\Video references\edit\` (master_16x9.mp4, vertical_9x16.mp4).
 - OpenRouter + ElevenLabs keys: OneDrive `...\Claude\Projects\Portfolio\.env.txt` (rename to `.env` if ever moved; never commit).
 - Dunnly (2026-09-09): system works but deliberately ON ICE (`status: paused`); live URL `https://dunnly.piyushtater.com`; no LinkedIn post yet; standard beta-access mailto pattern.
+- SEO/GEO (2026-09-21): user asked to register Search Console + optimize for SEO and GEO; `llms.txt` promoted from v2 backlog for that request only. GSC account steps stay with the user (HTML meta verification).
 
 ## Next actions (in order)
 
-1. Merge Dunnly PR after Vercel preview looks good.
+1. Merge SEO/GEO PR → paste GSC verification token → verify property → submit sitemap.
 2. User runs the phone test → write README phone workflow from what actually worked.
 3. Optional: add Dunnly LinkedIn post URL when published.
 4. Post the vertical concept video + live URL on LinkedIn (launch moment) if not done.

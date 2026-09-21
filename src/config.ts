@@ -14,7 +14,11 @@ export const site = {
 	// Default HTML <title> — leads with the name so the site can rank for it.
 	seoTitle: 'Piyush Tater — GenAI Systems Developer',
 	description:
-		'Piyush Tater is a GenAI systems developer building AI systems, workflows, and automation for organizations.',
+		'Portfolio of Piyush Tater — GenAI systems, AI workflows, and automation case studies. Browse live projects, post-mortems, and how each system was built.',
+	// Google Search Console HTML-tag verification. Paste the content= value from
+	// Search Console → URL-prefix property → HTML tag method, then redeploy.
+	// Leave '' until you have the token; empty string emits no meta tag.
+	googleSiteVerification: '',
 	// Default social share image (1200×630). Lives in /public.
 	ogImage: '/og-cover.png',
 	// Profiles that belong to the same person — teaches search engines the
