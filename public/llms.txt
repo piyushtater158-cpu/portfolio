@@ -15,9 +15,13 @@ Piyush Tater builds GenAI systems for organizations: RAG chatbots, finance autom
 ## Projects
 
 - [Atelier](https://piyushtater.com/projects/atelier): AI interior design assistant for generating designs, pitching clients, and closing work (private beta).
+- [Brand Deal Inbox Triage](https://piyushtater.com/projects/brand-deal-inbox-triage): Talent-manager desk that prices creator brand deals against rate cards, flags conflicts and scams, and drafts replies (rules first, AI optional; sample data).
 - [Dunnly](https://piyushtater.com/projects/dunnly): AR collections autopilot — overdue invoices through AI draft, email/WhatsApp, reply classify, Teams escalate (private beta).
 - [Ledger Lens](https://piyushtater.com/projects/ledger-lens): Vision AI invoice extraction — payee, bank account, IFSC from Drive or Gmail (private beta).
 - [Legal Review](https://piyushtater.com/projects/legal-review): AI contract clause checker for irregularities and one-sided provisions (private beta).
+- [Marketplace Listing Audit](https://piyushtater.com/projects/marketplace-listing-audit): Amazon and Flipkart listing audit that prices each problem in rupees per day and drafts fixes for approval (sample data).
+- [On-Brand](https://piyushtater.com/projects/on-brand): Brand-voice tweet engine — fingerprints a brand from its real posts and writes 10 critic-scored campaign tweets (n8n + Supabase).
+- [Post-Live Watch](https://piyushtater.com/projects/post-live-watch): Live influencer campaign triage with 12 deterministic detectors and AI explanations on top (sample data).
 - [Shop Inside AI Chat](https://piyushtater.com/projects/shop-mcp): Live Shopify product grid inside Claude or ChatGPT via MCP.
 - [True Assistant](https://piyushtater.com/projects/true-assistant): Private company AI — meetings, transcripts, grounded answers off external providers (private beta).
 - [Website RAG + Leads Bot](https://piyushtater.com/projects/website-rag-leads-bot): Production RAG chatbot with lead capture and alerts via n8n (no custom site backend).

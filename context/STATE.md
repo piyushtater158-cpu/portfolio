@@ -2,7 +2,7 @@
 
 > Read this file at the START of every session. Update it at the END of any session that changed code, content, decisions, or deployment. Append one entry to `context/LOG.md` per session. Rules for maintaining this file are in CLAUDE.md → "Session protocol".
 
-Last updated: 2026-09-21 (SEO / GEO / Search Console prep — branch seo/gsc-geo-meta)
+Last updated: 2026-11-12 (four October projects merged — PR #30)
 
 ## Where the project stands
 
@@ -14,13 +14,14 @@ All five build sessions in TODOS.md are complete. QA health 100 (was 97), design
 
 Since then: node-card pipeline merged (#12); Ledger Lens + other real projects live with beta-access application flow; mascot chatbot shipped (#16); card polish (CTA glow, beta-access modal, stack icon chips). **Dunnly** merged (#27) — paused / ON ICE, demo video + logo + beta access, live at https://dunnly.piyushtater.com.
 
-**SEO / GEO (2026-09-21):** Homepage + per-project meta titles/descriptions; optional `seo_title` / `seo_description` frontmatter; sitemap filter excludes `tmp-*` + `lastmod` from project dates; `public/llms.txt` for generative engines; Person + WebSite + SoftwareApplication JSON-LD. GSC HTML-file verification: `public/googled121980685bac5cf.html` (also keep `googleSiteVerification` meta hook empty unless switching methods).
+**October projects (2026-11-12):** On-Brand, Marketplace Listing Audit, Brand Deal Inbox Triage, Post-Live Watch added as `paused` (hiring proof-of-work, sample data) with generated cyan logos — merged via PR #30 after user review of the Vercel preview. Site now has 11 real projects.
+
+**SEO / GEO (2026-09-21):** Live via PR #29. Homepage + per-project meta titles/descriptions; optional `seo_title` / `seo_description`; sitemap with `tmp-*` filter + `lastmod`; `public/llms.txt`; Person + WebSite + SoftwareApplication JSON-LD. **Google Search Console:** property verified (HTML file `googled121980685bac5cf.html`); sitemap `https://piyushtater.com/sitemap-index.xml` submitted. Indexing is Google’s queue from here.
 
 ## Blocked on the user (nothing else blocks launch-completeness)
 
-1. **Google Search Console** — merge SEO PR so `https://piyushtater.com/googled121980685bac5cf.html` is live, then Verify (HTML file method). After verify: submit `https://piyushtater.com/sitemap-index.xml`.
-2. **Live phone test** — verify file create / folder trick / image upload per GitHub mobile surface, THEN write the README phone-workflow section (docs/design/02, Next Step 2). A failed test is an immediate trigger for the upgrade path.
-3. **LinkedIn URL** — set in `src/config.ts` (footer CTA); currently populated. Dunnly LinkedIn post still TBD (skip for now).
+1. **Live phone test** — verify file create / folder trick / image upload per GitHub mobile surface, THEN write the README phone-workflow section (docs/design/02, Next Step 2). A failed test is an immediate trigger for the upgrade path.
+2. **LinkedIn URL** — set in `src/config.ts` (footer CTA); currently populated. Dunnly LinkedIn post still TBD (skip for now).
 
 ## Deferred (known, deliberate)
 
@@ -51,11 +52,12 @@ Since then: node-card pipeline merged (#12); Ledger Lens + other real projects l
 - Concept videos (Veo 3.1, moodboard + LinkedIn teaser, NOT a site asset): OneDrive `...\Claude\Projects\Portfolio\Video references\edit\` (master_16x9.mp4, vertical_9x16.mp4).
 - OpenRouter + ElevenLabs keys: OneDrive `...\Claude\Projects\Portfolio\.env.txt` (rename to `.env` if ever moved; never commit).
 - Dunnly (2026-09-09): system works but deliberately ON ICE (`status: paused`); live URL `https://dunnly.piyushtater.com`; no LinkedIn post yet; standard beta-access mailto pattern.
-- SEO/GEO (2026-09-21): user asked to register Search Console + optimize for SEO and GEO; `llms.txt` promoted from v2 backlog for that request only. GSC account steps stay with the user (HTML meta verification).
+- SEO/GEO (2026-09-21): user asked to register Search Console + optimize for SEO and GEO; `llms.txt` promoted from v2 backlog for that request only. Verified via HTML file (not meta tag); sitemap submitted by user.
+- October projects (2026-11-12): all four set `paused` by the user (proof-of-work, not maintained); no beta-access block since they are public sample-data demos. `public/llms.txt` project list is hand-maintained — add a line whenever a project is added. Google Flow (account tooncreatives158@gmail.com) rejects automated clicks; generate logos with Cursor's image tool, Dunnly logo as style reference.
 
 ## Next actions (in order)
 
-1. Merge SEO/GEO PR → paste GSC verification token → verify property → submit sitemap.
-2. User runs the phone test → write README phone workflow from what actually worked.
-3. Optional: add Dunnly LinkedIn post URL when published.
-4. Post the vertical concept video + live URL on LinkedIn (launch moment) if not done.
+1. User runs the phone test → write README phone workflow from what actually worked.
+2. Optional: add Dunnly LinkedIn post URL when published.
+3. Post the vertical concept video + live URL on LinkedIn (launch moment) if not done.
+4. Optional: check GSC Performance / Pages in a few days for indexing status.

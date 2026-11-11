@@ -1,0 +1,42 @@
+---
+title: Post-Live Watch
+status: paused
+date: 2026-10-21
+tags: [automation, influencer-marketing, rules-engine, marketing]
+stack: [python, fastapi, react, ai]
+outcome: Triages live influencer campaigns with 12 deterministic detectors; AI only explains and classifies on top of a rule that has already fired, and 180 tests prove each rule fires on exactly the right posts.
+seo_title: Post-Live Watch — Influencer Campaign Triage
+seo_description: Rules-first triage dashboard for live influencer campaigns — 12 detectors, editable thresholds, AI on top for Hinglish sentiment and explanations.
+org_context: Proof-of-work for Walnut Folks Group, Confluencr-style influencer marketing — sample data
+links:
+  live: "https://post-live-watch.vercel.app"
+  repo: "https://github.com/piyushtater158-cpu/post-live-watch"
+cover_logo: ./assets/logo.jpg
+---
+
+> **Sample data.** Two fictional brands (GlowLeaf, LumaDerm), 20 fictional creators, synthetic metrics.
+
+## What it does
+
+Once an influencer campaign goes live, an account manager has to notice what went wrong across dozens of creators: posts that never went up, missing `#ad` disclosure, underperformance against the promised reach, suspicious engagement, a negative comment spike, or a post deleted early. Post-Live Watch screens the campaign data, raises flags in a queue sorted into Act now / Needs a look / OK, and drafts the nudge message for the manager to send.
+
+## How it works
+
+1. **Ingest metrics** — seeded demo data, manual entry, or a gated Instagram connector with two Meta API tiers (tested against recorded fixtures; no Meta app exists yet).
+2. **Resolve the deal terms** — real creator deals negotiate things away from the brief (a waived hashtag, a barter deal, no reach guarantee). Overrides are resolved in one place before any detector runs, and the card explains why a requirement doesn't apply.
+3. **Detect** — 12 rules: not posted, posted late, missing disclosure, missing tag/link/hashtag, underperforming, suspicious engagement, negative sentiment spike, deleted early, off-brief caption edits, expired Story without proof, competitor post, and viral winner.
+4. **Explain** — AI adds language on top: why a post underperformed, Hinglish and sarcasm sentiment, paraphrase detection, and a drafted nudge.
+5. **Decide** — approve, edit, or dismiss; every decision lands in a decision log.
+
+New deals and whole campaigns can be entered from an account manager's shorthand note: AI drafts, code validates, and nothing is written until the manager confirms. Disclosure can never be waived, and the AI is forbidden from inventing a creator's reach.
+
+## Design choices
+
+- **Rules first, AI on top.** Every flag comes from a transparent rule reading one editable `config/thresholds.yaml`. Turn AI off and the app still works end to end on keywords and templates.
+- **Correctness before UI.** The rules engine was built and verified with `pytest` before any UI code; 180 tests are the correctness proof.
+- **No score without evidence.** A creator with no history gets "New — no track record yet", and a missing reach figure is never scored as zero.
+- **$0 to run.** React on Vercel, FastAPI + SQLite on Render's free plan, a GitHub Actions keep-alive, and free OpenRouter models only, with a hard `max_price` of 0 on every request.
+
+## Stack
+
+Python + FastAPI + SQLite · React + TypeScript (Vite) · Jinja2 + HTMX · OpenRouter free models · Render + Vercel + GitHub Actions

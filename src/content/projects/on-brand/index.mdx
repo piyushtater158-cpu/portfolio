@@ -1,0 +1,46 @@
+---
+title: On-Brand
+status: paused
+date: 2026-10-26
+tags: [automation, marketing, agents]
+stack: [n8n, supabase, nextjs, ai]
+outcome: Learns a brand's voice from its real posts and writes 10 campaign tweets — each code-checked, scored by a critic from a different model family, and rewritten once if it falls short.
+seo_title: On-Brand — Brand-Voice Tweet Engine
+seo_description: n8n + Supabase pipeline that fingerprints a brand's voice from real posts, cites every trait, and writes 10 critic-scored campaign tweets.
+org_context: Hiring assignment for Walnut Folks — n8n workflows as code, Supabase Postgres, Next.js on Vercel
+links:
+  repo: "https://github.com/piyushtater158-cpu/On-Brand"
+cover_logo: ./assets/logo.jpg
+---
+
+## What it does
+
+Give it a brand (X handle, Instagram, LinkedIn page, website, or just pasted posts) and a campaign objective. It works out how the brand actually sounds, then writes 10 campaign tweets in that voice across conversational, promotional, witty, and informative slots. Each tweet comes with a critic score, a one-line "why this works" for the marketer, and a `needs_review` flag if it still fails a check.
+
+## How it works
+
+1. **Collect evidence** — up to 60 X posts, 40 Instagram captions, and 40 LinkedIn posts, plus the website. Posts are cleaned, deduplicated, and weighted by engagement and recency; the top 30 become evidence and 5 become style anchors.
+2. **Fingerprint in code** — pure statistics (length percentiles, emoji and hashtag rates, casing, punctuation) passed to the model as ground truth it must not contradict.
+3. **Build the VoiceDNA** — an analyst model fills a strict JSON schema of tone traits, themes, signature phrases, and a `never_says` list. Every observed trait must quote 3–12 words exactly from a real post.
+4. **Verify every citation** — each quote is matched character for character against the source posts. Traits whose quotes can't be found are downgraded to inferred.
+5. **Write, check, critique** — 10 slots fan out in parallel. The writer drafts 2 candidates, code checks them (length, claims, banned phrases, links), and a critic from a different model family scores them on 6 weighted dimensions. Below the pass bar, the tweet is rewritten once.
+6. **Diversity pass** — embedding similarity above 0.85 or repeated openers send the weaker tweet back for a rewrite.
+
+## What I built
+
+- n8n workflows written as code (n8n Workflow SDK) with reviewable diffs and a deploy script
+- Deterministic Code-node logic as plain JS modules, unit-tested with `node:test`
+- Versioned prompts, each with a strict JSON schema; scraped text fenced as data, campaign notes screened for prompt injection
+- Postgres functions that enforce daily budget, run caps, concurrency, and rate gates atomically, with every external call logged with its cost
+- Next.js app with live progress, single-tweet regenerate, Markdown/CSV export, and a "Chameleon mode" that writes one announcement in two brands' voices side by side
+- An eval harness: golden brands, replay runs, a single-prompt baseline, and a blind human A/B sheet
+
+## Design choices
+
+- **Code decides facts, models decide taste.** Anything checkable is deterministic and tested; models only write, judge, and summarize.
+- **No invented facts.** A tweet may only state prices, dates, or claims that appear in the product facts, campaign notes, or the brand's own posts.
+- **Honest output.** A tweet that still fails after its rewrite is kept and flagged, and every run reports passed / needs-review / failed counts.
+
+## Stack
+
+n8n (self-hosted, workflows as code) · Supabase Postgres · Next.js on Vercel · OpenRouter (writer and critic from different model families) · Apify, Exa, Jina Reader

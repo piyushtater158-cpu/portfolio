@@ -34,3 +34,10 @@ pnpm-debug.log*
 src/generated/
 public/constellation.svg
 public/graph-cards/
+
+# local-only test placeholder projects (never merged — CLAUDE.md build order step 3)
+src/content/projects/tmp-*/
+
+# media archives live in OneDrive, not the repo (CLAUDE.md rule 6)
+Video references/
+Project Logo/
