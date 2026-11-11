@@ -1,0 +1,1 @@
+- [Living System portfolio design](living-system-portfolio-design.md) — approved build contract, repo-outside-OneDrive rule, video prompt location
