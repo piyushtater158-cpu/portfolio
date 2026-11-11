@@ -1,0 +1,40 @@
+---
+title: Marketplace Listing Audit
+status: paused
+date: 2026-10-27
+tags: [automation, ecommerce, rules-engine]
+stack: [python, fastapi, nextjs, ai]
+outcome: Audits Amazon and Flipkart listings with 10 rule detectors, prices every problem in rupees per day, ranks the queue by urgency, and drafts a fix for the account manager to approve.
+seo_title: Marketplace Listing Audit — Amazon & Flipkart
+seo_description: Rules-first audit of Amazon and Flipkart listings that prices each problem in ₹ per day and drafts fixes for approval. AI optional, never the source of truth.
+org_context: Built for an Intent Farm-style account manager running several brands on Amazon and Flipkart — sample data
+links:
+  live: "https://audit.piyushtater.com"
+  repo: "https://github.com/piyushtater158-cpu/marketplace-listing-audit"
+cover_logo: ./assets/logo.jpg
+---
+
+> **Sample data.** The live demo runs on three fictional brands (GlowVeda skincare, Munchkraft snacks, Vayu Home appliances), 40 SKUs each, on both platforms. It resets to the seed when the API restarts.
+
+## What it does
+
+An account manager uploads the listings, ads, and reviews exports for their brands. The app flags what is broken, puts a rupee-per-day cost on each problem, ranks the queue by urgency, and drafts a fix. Approving a fix produces copy-ready text — a message to the brand or a task for the internal team. Nothing is sent or changed automatically.
+
+## How it works
+
+1. **Upload** — CSV, Excel, or OpenDocument exports, validated before anything is replaced. Built for real exports: the header row can sit anywhere in the first 20 rows, dates can be ISO or day-first, and errors name the file, sheet, row, and column.
+2. **Detect** — 10 rule detectors: out of stock with ads running, low stock with high spend, price gaps across platforms, price above MRP, sudden price changes, weak content, rating drops, lost Buy Box, ad waste, and suppressed listings.
+3. **Price the impact** — each card shows its own calculation, e.g. "₹522 ad spend wasted + ₹1,341 daily sales lost". The headline caps each listing at its daily spend plus sales, so a SKU with three problems isn't counted three times.
+4. **Draft the fix** — templates first, always. With AI on, the 12 highest-impact issues get AI-drafted titles, bullets, review themes, and a weekly brand summary a few seconds later in the background.
+5. **Approve** — the account manager approves, edits, or dismisses. Decisions carry over a re-upload when the same issue still fires.
+
+## Design choices
+
+- **Rules first, AI on top.** AI never creates, removes, or re-prices an issue; it only writes language on top of issues the rules already raised. Every threshold and rupee factor lives in one `config.yaml`, each with a one-line reason.
+- **Free models only.** The AI layer runs on OpenRouter's free models and is built around their limits: identical requests are cached, and a 429 pauses AI for 60 seconds instead of retrying into an exhausted quota.
+- **Checked AI summaries.** Every ₹ figure in the brand summary must be one the API supplied; a summary that fails the check is replaced by the template.
+- **Provable correctness.** A seed manifest lists exactly which issues each listing should raise, and 74 tests assert the engine matches it — every type fires, nothing extra fires.
+
+## Stack
+
+Python + FastAPI + SQLite (API, on Render) · Next.js Server Components (web, on Vercel) · OpenRouter free models · Docker · GitHub Actions

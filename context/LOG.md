@@ -26,14 +26,20 @@ Finished and merged the mascot chatbot. Added `api/chat.ts` (Vercel Edge proxy t
 ## 2026-07-23 â€” CTA glow + beta-access instructions modal + brand-color stack chips (feat/card-polish)
 User asked for: attention glow on the node-card "open case study â†’" CTA, a reusable "Request beta access" instructions window (declare org, position, evaluation details, target Google email, destination address), and icon-based stack display + docs. Shipped: cyan `nc-cta-pulse` (2.4s, offset from card breathe; static glow under reduced motion); `src/scripts/beta-access-modal.ts` singleton (z-30 above node card, capture-phase Escape/Tab so the card stays open; label-keyed via `src/lib/beta-access.ts`; mailto href untouched = no-JS fallback); `src/lib/stack-icons.ts` brand-colored chips (simple-icons CC0 paths, aliases, unknown slugs â†’ escaped text chips) rendered on case page + node card. Decisions: user explicitly overrode DESIGN.md monochrome rule for brand-color icons; modal is a sibling of node-card, not a generalization; slugify unified into stack-icons (graph.json byte-identical). Cherry-picked `chore/beta-access-norm` docs; ledger-lens mailto/MDX wording aligned with the modal list. Verified in browser: pulse, chips, modal-over-card stacking, two-stage Escape, focus restore, 390px bottom sheet, fallback/escaping.
 
-## 2026-09-09 — Add Dunnly project (add-project-dunnly / PR #27)
-User supplied Dunnly repo, YouTube demo, and cyan-on-black logo. Drafted case study already existed locally; filled YouTube + repo + cover logo. Status set to `paused` (ON ICE) with live URL https://dunnly.piyushtater.com and standard Request beta access mailto — system works but deliberately gated. No LinkedIn post yet. Outcome / body kept as written. Content-only under `src/content/projects/dunnly/`.
+## 2026-09-09 ï¿½ Add Dunnly project (add-project-dunnly / PR #27)
+User supplied Dunnly repo, YouTube demo, and cyan-on-black logo. Drafted case study already existed locally; filled YouTube + repo + cover logo. Status set to `paused` (ON ICE) with live URL https://dunnly.piyushtater.com and standard Request beta access mailto ï¿½ system works but deliberately gated. No LinkedIn post yet. Outcome / body kept as written. Content-only under `src/content/projects/dunnly/`.
 
-## 2026-09-09 — Merged Dunnly (#27)
+## 2026-09-09 ï¿½ Merged Dunnly (#27)
 Merged PR #27 to main (delete branch). Dunnly live on portfolio as paused/beta with logo, YouTube, repo, and https://dunnly.piyushtater.com.
 
-## 2026-09-21 — SEO / GEO / Search Console prep (seo/gsc-geo-meta)
+## 2026-09-21 ï¿½ SEO / GEO / Search Console prep (seo/gsc-geo-meta)
 Shipped meta titles/descriptions (home + seven projects via optional `seo_title`/`seo_description`), sitemap `tmp-*` filter + project `lastmod`, `public/llms.txt`, Person+WebSite+SoftwareApplication JSON-LD, and empty `googleSiteVerification` hook in config. Build verified: sitemap lists `/` + 7 real projects only. Blocked on user: create GSC property, paste HTML-tag token, verify, submit `sitemap-index.xml`.
 
-## 2026-09-21 — GSC HTML verification file
+## 2026-09-21 ï¿½ GSC HTML verification file
 User chose HTML-file verification (not meta tag). Added `public/googled121980685bac5cf.html` from their Downloads file. Needs merge to main before Verify succeeds on piyushtater.com.
+
+## 2026-09-21 â€” GSC verified + sitemap submitted
+User confirmed Google Search Console ownership verified and sitemap submitted. SEO/GEO loop closed; indexing is on Google's timeline. Next user blockers remain phone test + LinkedIn launch items.
+
+## 2026-11-12 â€” Four October projects added (content/october-projects)
+User asked for new GitHub repos to add. Found four public repos created after the last site update (all Oct 2026 hiring proof-of-work builds): On-Brand, marketplace-listing-audit, brand-deal-inbox-triage, post-live-watch. Added all four as `status: paused` (user's call â€” not maintained), case studies drafted from each README, plus `public/llms.txt` lines. New shared tags: `rules-engine` (3 projects), `influencer-marketing` (2), `marketing` (2). Logos: Google Flow ignored automated clicks (no request ever left the page), so they were generated with Cursor's image tool using the Dunnly logo as style reference; saved as `assets/logo.jpg`. Build + graph pass; no new single-use tag warnings.

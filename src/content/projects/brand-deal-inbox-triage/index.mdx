@@ -1,0 +1,39 @@
+---
+title: Brand Deal Inbox Triage
+status: paused
+date: 2026-10-27
+tags: [automation, influencer-marketing, rules-engine]
+stack: [python, fastapi, ai]
+outcome: Scans creator inboxes and DMs, prices every brand deal against the creator's own rate card, flags conflicts and scams, and drafts the reply — nothing is ever sent automatically.
+seo_title: Brand Deal Inbox Triage — Talent Manager Desk
+seo_description: Rules-first triage of creator brand inquiries — rate-card pricing, exclusivity and capacity conflicts, scam flags, and drafted replies. 93 tests.
+org_context: Proof-of-work for Walnut Folks Group, scoped to Kalakaaar talent management — sample data
+links:
+  repo: "https://github.com/piyushtater158-cpu/brand-deal-inbox-triage"
+cover_logo: ./assets/logo.jpg
+---
+
+> **Sample data.** Every creator, brand, email, and DM in this build is invented.
+
+## What it does
+
+A talent manager handles many creators at once, and brand inquiries land in creator mailboxes and Instagram DMs mixed together: real paid deals, lowballs, barter pitches, scams, and offers that collide with an exclusive partnership. This app scans those inboxes, extracts the deal terms, prices them against each creator's rate card, checks them against partners, no-go categories, capacity, and blackout dates, then scores and ranks them. The manager approves the drafted reply and copies it.
+
+## How it works
+
+1. **Scan** — one `InboxScanner` interface. The demo reads a sample folder; a real IMAP, Gmail API, or Meta DM integration only has to swap that one class.
+2. **Extract** — regex first: ₹/k/L/lakh amounts, Hinglish numerals, dates, deliverable keywords. AI only fills fields the rules left empty, and only with values that pass validation. A free vision model can transcribe DM screenshots.
+3. **Price** — the quote is compared with the creator's own rate card, including YouTube integrations and barter minimums.
+4. **Check conflicts** — active exclusivities, no-go categories, monthly capacity, and blackout windows. The same rule gives opposite outcomes from one date comparison: a rival brand pitching a creator during an active exclusivity is capped at score 20, while the same pitch after it expired scores on merit.
+5. **Draft the reply** — a template per recommended action, or a warmer AI rewrite with the same facts and ₹ amounts on request.
+
+## Design choices
+
+- **Every flag traces to config.** Every keyword, weight, risk penalty, threshold, and spam pattern lives in `config.yaml`, editable from the running app and validated before it's written back.
+- **AI is optional.** The header toggle switches everything to deterministic fallbacks; with no key set, "AI on" behaves exactly like "AI off", and a test asserts it.
+- **Free models only, never blocking.** Page loads only read cached AI replies; a scan calls AI for messages with gaps inside a 40-second budget, and rate limits pause AI instead of stalling the app.
+- **Proven, not claimed.** 93 tests, a 95-check HTTP smoke test, 16 real-browser checks, and an AI-off acceptance script that diffs the pipeline against 29 hand-reviewed inquiries across 19 scenarios.
+
+## Stack
+
+Python + FastAPI + SQLite · Jinja2 + HTMX · OpenRouter free text and vision models · Docker on Render
