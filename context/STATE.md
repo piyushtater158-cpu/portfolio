@@ -16,7 +16,7 @@ Since then: node-card pipeline merged (#12); Ledger Lens + other real projects l
 
 **October projects (2026-11-12):** On-Brand, Marketplace Listing Audit, Brand Deal Inbox Triage, Post-Live Watch added as `paused` (hiring proof-of-work, sample data) with generated cyan logos — merged via PR #30 after user review of the Vercel preview.
 
-**Weekend Enquiry Desk (2026-11-22):** Added as `live` with YouTube https://youtu.be/6vJJIkliQcA, public demo https://weekend-enquiry-desk.vercel.app, and the GitHub repo. Hiring proof-of-work (synthetic guests, public sunkssd.io copy only). No cover logo yet. Site now has 12 real projects.
+**Weekend Enquiry Desk (2026-11-22):** Added as `live` with YouTube https://youtu.be/6vJJIkliQcA, public demo https://weekend-enquiry-desk.vercel.app, and the GitHub repo. Hiring proof-of-work (synthetic guests, public sunkssd.io copy only). No cover logo yet. Site now has 12 real projects. Shipping via PR #31.
 
 **SEO / GEO (2026-09-21):** Live via PR #29. Homepage + per-project meta titles/descriptions; optional `seo_title` / `seo_description`; sitemap with `tmp-*` filter + `lastmod`; `public/llms.txt`; Person + WebSite + SoftwareApplication JSON-LD. **Google Search Console:** property verified (HTML file `googled121980685bac5cf.html`); sitemap `https://piyushtater.com/sitemap-index.xml` submitted. Indexing is Google’s queue from here.
 
