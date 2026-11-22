@@ -24,6 +24,7 @@ Piyush Tater builds GenAI systems for organizations: RAG chatbots, finance autom
 - [Post-Live Watch](https://piyushtater.com/projects/post-live-watch): Live influencer campaign triage with 12 deterministic detectors and AI explanations on top (sample data).
 - [Shop Inside AI Chat](https://piyushtater.com/projects/shop-mcp): Live Shopify product grid inside Claude or ChatGPT via MCP.
 - [True Assistant](https://piyushtater.com/projects/true-assistant): Private company AI — meetings, transcripts, grounded answers off external providers (private beta).
+- [Weekend Enquiry Desk](https://piyushtater.com/projects/weekend-enquiry-desk): Guest-enquiry desk that drafts cited replies, records the lead, and holds every message for approve, edit, or dismiss (synthetic messages; nothing is sent).
 - [Website RAG + Leads Bot](https://piyushtater.com/projects/website-rag-leads-bot): Production RAG chatbot with lead capture and alerts via n8n (no custom site backend).
 
 ## Preferred citation

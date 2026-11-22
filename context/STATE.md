@@ -2,7 +2,7 @@
 
 > Read this file at the START of every session. Update it at the END of any session that changed code, content, decisions, or deployment. Append one entry to `context/LOG.md` per session. Rules for maintaining this file are in CLAUDE.md → "Session protocol".
 
-Last updated: 2026-11-12 (four October projects merged — PR #30)
+Last updated: 2026-11-22 (Weekend Enquiry Desk added — demo video)
 
 ## Where the project stands
 
@@ -14,7 +14,9 @@ All five build sessions in TODOS.md are complete. QA health 100 (was 97), design
 
 Since then: node-card pipeline merged (#12); Ledger Lens + other real projects live with beta-access application flow; mascot chatbot shipped (#16); card polish (CTA glow, beta-access modal, stack icon chips). **Dunnly** merged (#27) — paused / ON ICE, demo video + logo + beta access, live at https://dunnly.piyushtater.com.
 
-**October projects (2026-11-12):** On-Brand, Marketplace Listing Audit, Brand Deal Inbox Triage, Post-Live Watch added as `paused` (hiring proof-of-work, sample data) with generated cyan logos — merged via PR #30 after user review of the Vercel preview. Site now has 11 real projects.
+**October projects (2026-11-12):** On-Brand, Marketplace Listing Audit, Brand Deal Inbox Triage, Post-Live Watch added as `paused` (hiring proof-of-work, sample data) with generated cyan logos — merged via PR #30 after user review of the Vercel preview.
+
+**Weekend Enquiry Desk (2026-11-22):** Added as `live` with YouTube https://youtu.be/6vJJIkliQcA, public demo https://weekend-enquiry-desk.vercel.app, and the GitHub repo. Hiring proof-of-work (synthetic guests, public sunkssd.io copy only). No cover logo yet. Site now has 12 real projects.
 
 **SEO / GEO (2026-09-21):** Live via PR #29. Homepage + per-project meta titles/descriptions; optional `seo_title` / `seo_description`; sitemap with `tmp-*` filter + `lastmod`; `public/llms.txt`; Person + WebSite + SoftwareApplication JSON-LD. **Google Search Console:** property verified (HTML file `googled121980685bac5cf.html`); sitemap `https://piyushtater.com/sitemap-index.xml` submitted. Indexing is Google’s queue from here.
 
@@ -54,6 +56,7 @@ Since then: node-card pipeline merged (#12); Ledger Lens + other real projects l
 - Dunnly (2026-09-09): system works but deliberately ON ICE (`status: paused`); live URL `https://dunnly.piyushtater.com`; no LinkedIn post yet; standard beta-access mailto pattern.
 - SEO/GEO (2026-09-21): user asked to register Search Console + optimize for SEO and GEO; `llms.txt` promoted from v2 backlog for that request only. Verified via HTML file (not meta tag); sitemap submitted by user.
 - October projects (2026-11-12): all four set `paused` by the user (proof-of-work, not maintained); no beta-access block since they are public sample-data demos. `public/llms.txt` project list is hand-maintained — add a line whenever a project is added. Google Flow (account tooncreatives158@gmail.com) rejects automated clicks; generate logos with Cursor's image tool, Dunnly logo as style reference.
+- Weekend Enquiry Desk (2026-11-22): `live` because the public demo is open and the user asked to put the video on the portfolio now. Same sample-data pattern as the October builds, but not marked ON ICE unless they say so. No cover logo — the repo has none, and a generated one was not requested.
 
 ## Next actions (in order)
 
