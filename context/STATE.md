@@ -2,7 +2,7 @@
 
 > Read this file at the START of every session. Update it at the END of any session that changed code, content, decisions, or deployment. Append one entry to `context/LOG.md` per session. Rules for maintaining this file are in CLAUDE.md → "Session protocol".
 
-Last updated: 2026-11-22 (Weekend Enquiry Desk cover logo)
+Last updated: 2026-11-22 (On-Brand demo video)
 
 ## Where the project stands
 
@@ -14,7 +14,7 @@ All five build sessions in TODOS.md are complete. QA health 100 (was 97), design
 
 Since then: node-card pipeline merged (#12); Ledger Lens + other real projects live with beta-access application flow; mascot chatbot shipped (#16); card polish (CTA glow, beta-access modal, stack icon chips). **Dunnly** merged (#27) — paused / ON ICE, demo video + logo + beta access, live at https://dunnly.piyushtater.com.
 
-**October projects (2026-11-12):** On-Brand, Marketplace Listing Audit, Brand Deal Inbox Triage, Post-Live Watch added as `paused` (hiring proof-of-work, sample data) with generated cyan logos — merged via PR #30 after user review of the Vercel preview.
+**October projects (2026-11-12):** On-Brand, Marketplace Listing Audit, Brand Deal Inbox Triage, Post-Live Watch added as `paused` (hiring proof-of-work, sample data) with generated cyan logos — merged via PR #30 after user review of the Vercel preview. On-Brand demo video added 2026-11-22: https://youtu.be/EB35o_WIwq8.
 
 **Weekend Enquiry Desk (2026-11-22):** Added as `live` with YouTube https://youtu.be/6vJJIkliQcA, public demo https://weekend-enquiry-desk.vercel.app, and the GitHub repo. Hiring proof-of-work (synthetic guests, public sunkssd.io copy only). Cover logo is the cyan speech-bubble + gate mark, wordmark `weekend`. Site now has 12 real projects. Shipped via PR #31.
 
