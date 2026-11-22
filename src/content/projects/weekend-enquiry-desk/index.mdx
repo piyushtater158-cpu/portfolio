@@ -1,0 +1,41 @@
+---
+title: Weekend Enquiry Desk
+status: live
+date: 2026-11-20
+tags: [automation, agents, rules-engine]
+stack: [python, fastapi, ai]
+outcome: Turns a guest enquiry into a cited draft reply and a lead record, then holds it for approve, edit, or dismiss — 11 policy rules, and nothing is ever sent.
+seo_title: Weekend Enquiry Desk — Cited Guest Replies
+seo_description: LangGraph desk that drafts cited replies to guest enquiries, records the lead, and holds every message for a human approve, edit, or dismiss.
+org_context: Proof-of-work for the SUNKSSD AI Automation and Agentic Systems Engineer role — synthetic messages, public site copy only
+links:
+  youtube: "https://youtu.be/6vJJIkliQcA"
+  live: "https://weekend-enquiry-desk.vercel.app"
+  repo: "https://github.com/piyushtater158-cpu/weekend-enquiry-desk"
+---
+
+> **Sample data.** The 16 guest messages are labelled synthetic. The knowledge base is scraped from the public sunkssd.io pages only — never Instagram, booking widgets, or WhatsApp.
+
+## What it does
+
+A guest message comes in. The desk classifies it, drafts a reply where every factual sentence cites a page it actually read, writes a lead record, and stops. An operator approves, edits, or dismisses. Approving logs what would have been sent. There is no path that messages a real guest — the send log column is named `would_send_to` on purpose.
+
+## How it works
+
+1. **Intake** — a webhook (shared secret, idempotent on the external reference) creates the lead and starts a LangGraph run in the background.
+2. **Research** — the whole public corpus goes in the prompt. The site is about 1,200 words, so full-context beats a vector search that could drop one clause of a message asking about dogs, tickets, and camping at once.
+3. **Draft** — the model emits sentences with citations, not plain text.
+4. **Policy gate** — 11 rules (`PR-01` through `PR-11`). Currency figures, availability claims, uncited facts, fake citations, off-whitelist URLs, and a date outside the published weekends all fail. A first failure gets one repair pass. A second failure escalates, with no override.
+5. **Human gate** — the graph interrupts. Approve logs the send. Edit sends the new body back through all 11 rules before it can be logged. A typed-in fake price is re-escalated the same way a model draft would be. Dismiss closes it.
+6. **Record** — Supabase is the source of truth. GoHighLevel sync is opt-in against the builder's own sandbox, not a claim about SUNKSSD. Reporting tags every escalation with the missing fact, so the content-gap and demand-signal reports are queries, not a second pipeline.
+
+## Design choices
+
+- **Plain code, not another flowchart.** The posting asked for judgment about when n8n is the wrong tool. This orchestration is a LangGraph `StateGraph` with conditional edges and tests. Other portfolio projects already show n8n.
+- **No pgvector, on purpose.** At this corpus size a similarity search can miss a clause and can return nothing. The threshold for vectors is a few hundred real FAQ or past-reply pairs, which do not exist yet.
+- **The gate applies to humans too.** An edited draft re-runs the full policy check. "Zero invented prices" is true for the operator's edit, not only the model's first draft.
+- **Proven on a real run.** 100 unit and integration tests. A live pass with a free OpenRouter model, Supabase, and the GHL sandbox caught four bugs mocks could not — jsonb binding, the Postgres checkpointer lifecycle, a shared connection across workers, and GHL rejecting contacts with no email or phone — each fixed and covered by a regression test.
+
+## Stack
+
+Python + FastAPI · LangGraph · Supabase Postgres · OpenRouter · optional GoHighLevel and Twilio WhatsApp sandbox · Docker · public demo on Vercel
