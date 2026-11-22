@@ -2,7 +2,7 @@
 
 > Read this file at the START of every session. Update it at the END of any session that changed code, content, decisions, or deployment. Append one entry to `context/LOG.md` per session. Rules for maintaining this file are in CLAUDE.md → "Session protocol".
 
-Last updated: 2026-11-22 (Weekend Enquiry Desk added — demo video)
+Last updated: 2026-11-22 (Weekend Enquiry Desk cover logo)
 
 ## Where the project stands
 
@@ -16,7 +16,7 @@ Since then: node-card pipeline merged (#12); Ledger Lens + other real projects l
 
 **October projects (2026-11-12):** On-Brand, Marketplace Listing Audit, Brand Deal Inbox Triage, Post-Live Watch added as `paused` (hiring proof-of-work, sample data) with generated cyan logos — merged via PR #30 after user review of the Vercel preview.
 
-**Weekend Enquiry Desk (2026-11-22):** Added as `live` with YouTube https://youtu.be/6vJJIkliQcA, public demo https://weekend-enquiry-desk.vercel.app, and the GitHub repo. Hiring proof-of-work (synthetic guests, public sunkssd.io copy only). No cover logo yet. Site now has 12 real projects. Shipping via PR #31.
+**Weekend Enquiry Desk (2026-11-22):** Added as `live` with YouTube https://youtu.be/6vJJIkliQcA, public demo https://weekend-enquiry-desk.vercel.app, and the GitHub repo. Hiring proof-of-work (synthetic guests, public sunkssd.io copy only). Cover logo is the cyan speech-bubble + gate mark, wordmark `weekend`. Site now has 12 real projects. Shipped via PR #31.
 
 **SEO / GEO (2026-09-21):** Live via PR #29. Homepage + per-project meta titles/descriptions; optional `seo_title` / `seo_description`; sitemap with `tmp-*` filter + `lastmod`; `public/llms.txt`; Person + WebSite + SoftwareApplication JSON-LD. **Google Search Console:** property verified (HTML file `googled121980685bac5cf.html`); sitemap `https://piyushtater.com/sitemap-index.xml` submitted. Indexing is Google’s queue from here.
 
@@ -56,7 +56,7 @@ Since then: node-card pipeline merged (#12); Ledger Lens + other real projects l
 - Dunnly (2026-09-09): system works but deliberately ON ICE (`status: paused`); live URL `https://dunnly.piyushtater.com`; no LinkedIn post yet; standard beta-access mailto pattern.
 - SEO/GEO (2026-09-21): user asked to register Search Console + optimize for SEO and GEO; `llms.txt` promoted from v2 backlog for that request only. Verified via HTML file (not meta tag); sitemap submitted by user.
 - October projects (2026-11-12): all four set `paused` by the user (proof-of-work, not maintained); no beta-access block since they are public sample-data demos. `public/llms.txt` project list is hand-maintained — add a line whenever a project is added. Google Flow (account tooncreatives158@gmail.com) rejects automated clicks; generate logos with Cursor's image tool, Dunnly logo as style reference.
-- Weekend Enquiry Desk (2026-11-22): `live` because the public demo is open and the user asked to put the video on the portfolio now. Same sample-data pattern as the October builds, but not marked ON ICE unless they say so. No cover logo — the repo has none, and a generated one was not requested.
+- Weekend Enquiry Desk (2026-11-22): `live` because the public demo is open and the user asked to put the video on the portfolio now. Same sample-data pattern as the October builds, but not marked ON ICE unless they say so. Cover logo generated in the Dunnly house style (cyan line icon, monospace wordmark, block cursor) after the user asked for one; the repo itself has no logo.
 
 ## Next actions (in order)
 

@@ -46,3 +46,6 @@ User asked for new GitHub repos to add. Found four public repos created after th
 
 ## 2026-11-22 — Weekend Enquiry Desk + demo video
 User sent https://youtu.be/6vJJIkliQcA for the weekend project. Matched it to `weekend-enquiry-desk` (created 2026-11-20; oEmbed title "Weekend Enquiry Desk"). Added the case study as `status: live` with that YouTube URL, https://weekend-enquiry-desk.vercel.app (HTTP 200), and the GitHub repo. Reused tags `automation`, `agents`, `rules-engine`. No logo in the repo, so no cover image. `public/llms.txt` updated. Local Astro build is blocked by Windows Application Control on the compiler binding; Vercel check on PR #31 succeeded. Preview is behind Vercel login.
+
+## 2026-11-22 — Weekend Enquiry Desk cover logo
+User asked for a logo. Generated a cyan-on-black mark in the Dunnly/On-Brand house style (speech bubble with a gate, wordmark `weekend` plus block cursor) and set `cover_logo`. Repo still has no logo of its own.
