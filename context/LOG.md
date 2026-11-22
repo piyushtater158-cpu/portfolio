@@ -49,3 +49,6 @@ User sent https://youtu.be/6vJJIkliQcA for the weekend project. Matched it to `w
 
 ## 2026-11-22 — Weekend Enquiry Desk cover logo
 User asked for a logo. Generated a cyan-on-black mark in the Dunnly/On-Brand house style (speech bubble with a gate, wordmark `weekend` plus block cursor) and set `cover_logo`. Repo still has no logo of its own.
+
+## 2026-11-22 — On-Brand demo video
+User sent https://youtu.be/EB35o_WIwq8 for On-Brand. Added `links.youtube` on the existing paused case study. No other content change.
